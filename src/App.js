@@ -1,26 +1,108 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { Auth, Hub } from "aws-amplify";
+import Amplify from "aws-amplify";
+import awsconfig from "./aws-exports";
+import { Authenticator, AmplifyTheme } from "aws-amplify-react";
+
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Story from "./pages/Story";
+
+import Navbar from "./components/Navbar";
+import { sectionFooter } from "@aws-amplify/ui";
+
+Amplify.configure(awsconfig);
+
+class App extends Component {
+  state = {
+    user: null
+  };
+
+  componentDidMount() {
+    console.dir(AmplifyTheme);
+    this.getUserData();
+
+    Hub.listen("auth", data => {
+      const { payload } = data;
+      this.listener(payload);
+      console.log(data.payload.data.username + " has " + data.payload.event);
+    });
+  }
+
+  getUserData = async () => {
+    const user = await Auth.currentAuthenticatedUser();
+    user ? this.setState({ user }) : this.setState({ user: null });
+  };
+
+  listener = payload => {
+    switch (payload.event) {
+      case "signIn":
+        this.getUserData();
+        break;
+      case "signUp":
+        break;
+      case "signOut":
+        this.setState({ user: null });
+        break;
+      default:
+        return;
+    }
+  };
+
+  handleSignOut = async () => {
+    try {
+      await Auth.signOut();
+    } catch (err) {
+      console.log("Error signing out user", err);
+    }
+  };
+
+  render() {
+    const { user } = this.state;
+
+    return !user ? (
+      <Authenticator theme={theme} />
+    ) : (
+      <Router>
+        <>
+          <Navbar user={user.username} handleSignOut={this.handleSignOut} />
+          <div className="app-box">
+            <Route exact path="/" component={Home} />
+            <Route path="/profile" component={Profile} />
+            <Route
+              path="/stories/:storyId"
+              component={({ match }) => (
+                <Story storyId={match.params.storyId} />
+              )}
+            />
+          </div>
+        </>
+      </Router>
+    );
+  }
 }
+
+const theme = {
+  ...AmplifyTheme,
+  navBar: {
+    ...AmplifyTheme.navBar,
+    backgroundColor: "#ffffff"
+  },
+  button: {
+    ...AmplifyTheme.button,
+    backgroundColor: "#ffffff"
+  },
+  sectionFooter: {
+    ...AmplifyTheme.sectionFooter,
+    backgroundColor: "#ffffff"
+  },
+  sectionHeader: {
+    ...AmplifyTheme.sectionHeader,
+    backgroundColor: "#ffffff",
+    color: "#000000"
+  }
+};
 
 export default App;

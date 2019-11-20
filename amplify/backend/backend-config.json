@@ -1,0 +1,9 @@
+{
+	"auth": {
+		"flowception233cd820": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": []
+		}
+	}
+}
