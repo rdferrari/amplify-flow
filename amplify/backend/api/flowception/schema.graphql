@@ -1,0 +1,94 @@
+type Mapstory
+  @model
+  @searchable
+  @auth(rules: [{ allow: owner, identityField: "sub" }]) {
+  id: ID!
+  title: String!
+  description: String!
+  location: [Location]
+    @connection(name: "MapstoryLocations", sortField: "createdAt")
+  tags: [String]
+  owner: String!
+  createdAt: String
+}
+
+type Location @model @auth(rules: [{ allow: owner, identityField: "sub" }]) {
+  id: ID!
+  title: String!
+  description: String!
+  latitude: Float!
+  longitude: Float!
+  notes: [Note] @connection(name: "LocationNotes", sortField: "createdAt")
+  images: [Image] @connection(name: "LocationImages", sortField: "createdAt")
+  videos: [Video] @connection(name: "LocationVideos", sortField: "createdAt")
+  images360: [Image360]
+    @connection(name: "LocationImages360", sortField: "createdAt")
+  videso360: [Video360]
+    @connection(name: "LocationVideos360", sortField: "createdAt")
+  mapstory: Mapstory @connection(name: "MapstoryLocations")
+  owner: String
+  createdAt: String
+}
+
+type Note @model @auth(rules: [{ allow: owner, identityField: "sub" }]) {
+  id: ID!
+  title: String!
+  note: String!
+  location: Location @connection(name: "LocationNotes")
+  owner: String
+  createdAt: String
+}
+
+type Image @model @auth(rules: [{ allow: owner, identityField: "sub" }]) {
+  id: ID!
+  title: String!
+  file: S3Object!
+  location: Location @connection(name: "LocationImages")
+  owner: String
+  createdAt: String
+}
+
+type Video @model @auth(rules: [{ allow: owner, identityField: "sub" }]) {
+  id: ID!
+  title: String!
+  url: String!
+  location: Location @connection(name: "LocationVideos")
+  owner: String
+  createdAt: String
+}
+
+type Image360 @model @auth(rules: [{ allow: owner, identityField: "sub" }]) {
+  id: ID!
+  title: String!
+  file: S3Object!
+  location: Location @connection(name: "LocationImages360")
+  owner: String
+  createdAt: String
+}
+
+type Video360 @model @auth(rules: [{ allow: owner, identityField: "sub" }]) {
+  id: ID!
+  title: String!
+  url: String!
+  location: Location @connection(name: "LocationVideos360")
+  owner: String
+  createdAt: String
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+type User
+  @model(
+    queries: { get: "getUser" }
+    mutations: { create: "registerUser", update: "updateUser" }
+    subscriptions: null
+  ) {
+  id: ID!
+  username: String!
+  email: String!
+  registered: Boolean
+}
