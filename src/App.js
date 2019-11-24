@@ -11,7 +11,8 @@ import Profile from "./pages/Profile";
 import Story from "./pages/Story";
 
 import Navbar from "./components/Navbar";
-import { sectionFooter } from "@aws-amplify/ui";
+
+export const UserContext = React.createContext();
 
 Amplify.configure(awsconfig);
 
@@ -65,21 +66,23 @@ class App extends Component {
     return !user ? (
       <Authenticator theme={theme} />
     ) : (
-      <Router>
-        <>
-          <Navbar user={user.username} handleSignOut={this.handleSignOut} />
-          <div className="app-box">
-            <Route exact path="/" component={Home} />
-            <Route path="/profile" component={Profile} />
-            <Route
-              path="/stories/:storyId"
-              component={({ match }) => (
-                <Story storyId={match.params.storyId} />
-              )}
-            />
-          </div>
-        </>
-      </Router>
+      <UserContext.Provider value={{ user }}>
+        <Router>
+          <>
+            <Navbar user={user.username} handleSignOut={this.handleSignOut} />
+            <div className="app-box">
+              <Route exact path="/" component={Home} />
+              <Route path="/profile" component={Profile} />
+              <Route
+                path="/stories/:storyId"
+                component={({ match }) => (
+                  <Story storyId={match.params.storyId} />
+                )}
+              />
+            </div>
+          </>
+        </Router>
+      </UserContext.Provider>
     );
   }
 }
