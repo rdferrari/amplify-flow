@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { graphqlOperation } from "aws-amplify";
+import { Auth, graphqlOperation } from "aws-amplify";
 import { Connect } from "aws-amplify-react";
 import { listMapstorys } from "../graphql/queries";
 import { onCreateMapstory } from "../graphql/subscriptions";

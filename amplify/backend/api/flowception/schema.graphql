@@ -1,4 +1,6 @@
-type Mapstory @model {
+type Mapstory
+  @model(subscriptions: { level: public })
+  @auth(rules: [{ allow: owner }]) {
   id: ID!
   title: String!
   description: String!
