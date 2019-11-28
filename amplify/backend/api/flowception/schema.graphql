@@ -1,5 +1,6 @@
 type Mapstory
   @model(subscriptions: { level: public })
+  @searchable
   @auth(rules: [{ allow: owner }]) {
   id: ID!
   title: String!
@@ -8,15 +9,21 @@ type Mapstory
   locations: [Location] @connection(name: "MapstoryLocations")
 }
 
-type Location @model {
+type Location
+  @model(subscriptions: { level: public })
+  @auth(rules: [{ allow: owner }]) {
   id: ID!
+  owner: String
   title: String!
   mapstory: Mapstory @connection(name: "MapstoryLocations")
   notes: [Note] @connection(name: "LocationNotes")
 }
 
-type Note @model {
+type Note
+  @model(subscriptions: { level: public })
+  @auth(rules: [{ allow: owner }]) {
   id: ID!
+  owner: String
   note: String
   location: Location @connection(name: "LocationNotes")
 }

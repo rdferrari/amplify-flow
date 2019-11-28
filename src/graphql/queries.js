@@ -10,6 +10,7 @@ export const getMapstory = `query GetMapstory($id: ID!) {
     locations {
       items {
         id
+        owner
         title
       }
       nextToken
@@ -39,6 +40,7 @@ export const listMapstorys = `query ListMapstorys(
 export const getLocation = `query GetLocation($id: ID!) {
   getLocation(id: $id) {
     id
+    owner
     title
     mapstory {
       id
@@ -52,6 +54,7 @@ export const getLocation = `query GetLocation($id: ID!) {
     notes {
       items {
         id
+        owner
         note
       }
       nextToken
@@ -67,6 +70,7 @@ export const listLocations = `query ListLocations(
   listLocations(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      owner
       title
       mapstory {
         id
@@ -85,9 +89,11 @@ export const listLocations = `query ListLocations(
 export const getNote = `query GetNote($id: ID!) {
   getNote(id: $id) {
     id
+    owner
     note
     location {
       id
+      owner
       title
       mapstory {
         id
@@ -110,13 +116,41 @@ export const listNotes = `query ListNotes(
   listNotes(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      owner
       note
       location {
         id
+        owner
         title
       }
     }
     nextToken
+  }
+}
+`;
+export const searchMapstorys = `query SearchMapstorys(
+  $filter: SearchableMapstoryFilterInput
+  $sort: SearchableMapstorySortInput
+  $limit: Int
+  $nextToken: String
+) {
+  searchMapstorys(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      title
+      description
+      owner
+      locations {
+        nextToken
+      }
+    }
+    nextToken
+    total
   }
 }
 `;

@@ -6,8 +6,7 @@ import { UserContext } from "../App";
 class NewStory extends Component {
   state = {
     title: "",
-    description: "",
-    owner: ""
+    description: ""
   };
 
   handleAddStory = event => {
@@ -25,7 +24,7 @@ class NewStory extends Component {
     event.preventDefault();
 
     try {
-      const { title, description, owner } = this.state;
+      const { title, description } = this.state;
       const input = {
         title,
         description,
@@ -43,8 +42,7 @@ class NewStory extends Component {
 
       this.setState({
         title: "",
-        description: "",
-        owner: ""
+        description: ""
       });
     } catch (err) {
       console.error("Error adding new story", err);
