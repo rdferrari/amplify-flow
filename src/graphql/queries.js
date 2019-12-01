@@ -4,13 +4,14 @@
 export const getMapstory = `query GetMapstory($id: ID!) {
   getMapstory(id: $id) {
     id
+    owner
     title
     description
-    owner
     locations {
       items {
         id
         owner
+        mapstoryID
         title
       }
       nextToken
@@ -26,9 +27,9 @@ export const listMapstorys = `query ListMapstorys(
   listMapstorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      owner
       title
       description
-      owner
       locations {
         nextToken
       }
@@ -41,23 +42,16 @@ export const getLocation = `query GetLocation($id: ID!) {
   getLocation(id: $id) {
     id
     owner
+    mapstoryID
     title
     mapstory {
       id
+      owner
       title
       description
-      owner
       locations {
         nextToken
       }
-    }
-    notes {
-      items {
-        id
-        owner
-        note
-      }
-      nextToken
     }
   }
 }
@@ -71,57 +65,13 @@ export const listLocations = `query ListLocations(
     items {
       id
       owner
+      mapstoryID
       title
       mapstory {
         id
+        owner
         title
         description
-        owner
-      }
-      notes {
-        nextToken
-      }
-    }
-    nextToken
-  }
-}
-`;
-export const getNote = `query GetNote($id: ID!) {
-  getNote(id: $id) {
-    id
-    owner
-    note
-    location {
-      id
-      owner
-      title
-      mapstory {
-        id
-        title
-        description
-        owner
-      }
-      notes {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const listNotes = `query ListNotes(
-  $filter: ModelNoteFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listNotes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      owner
-      note
-      location {
-        id
-        owner
-        title
       }
     }
     nextToken
@@ -142,11 +92,40 @@ export const searchMapstorys = `query SearchMapstorys(
   ) {
     items {
       id
+      owner
       title
       description
-      owner
       locations {
         nextToken
+      }
+    }
+    nextToken
+    total
+  }
+}
+`;
+export const searchLocations = `query SearchLocations(
+  $filter: SearchableLocationFilterInput
+  $sort: SearchableLocationSortInput
+  $limit: Int
+  $nextToken: String
+) {
+  searchLocations(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      owner
+      mapstoryID
+      title
+      mapstory {
+        id
+        owner
+        title
+        description
       }
     }
     nextToken

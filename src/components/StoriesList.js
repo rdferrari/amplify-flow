@@ -37,9 +37,9 @@ const StoriesList = ({ searchResults }) => {
                 <div key={mapstory.id}>
                   <Link to={`/stories/${mapstory.id}`}>
                     <h2>{mapstory.title}</h2>
-                    <p>{mapstory.description}</p>
-                    <p>{mapstory.owner}</p>
                   </Link>
+                  <p>{mapstory.description}</p>
+                  <p>{mapstory.owner}</p>
                 </div>
               ))}
             </>

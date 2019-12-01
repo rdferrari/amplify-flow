@@ -4,13 +4,14 @@
 export const createMapstory = `mutation CreateMapstory($input: CreateMapstoryInput!) {
   createMapstory(input: $input) {
     id
+    owner
     title
     description
-    owner
     locations {
       items {
         id
         owner
+        mapstoryID
         title
       }
       nextToken
@@ -21,13 +22,14 @@ export const createMapstory = `mutation CreateMapstory($input: CreateMapstoryInp
 export const updateMapstory = `mutation UpdateMapstory($input: UpdateMapstoryInput!) {
   updateMapstory(input: $input) {
     id
+    owner
     title
     description
-    owner
     locations {
       items {
         id
         owner
+        mapstoryID
         title
       }
       nextToken
@@ -38,13 +40,14 @@ export const updateMapstory = `mutation UpdateMapstory($input: UpdateMapstoryInp
 export const deleteMapstory = `mutation DeleteMapstory($input: DeleteMapstoryInput!) {
   deleteMapstory(input: $input) {
     id
+    owner
     title
     description
-    owner
     locations {
       items {
         id
         owner
+        mapstoryID
         title
       }
       nextToken
@@ -56,23 +59,16 @@ export const createLocation = `mutation CreateLocation($input: CreateLocationInp
   createLocation(input: $input) {
     id
     owner
+    mapstoryID
     title
     mapstory {
       id
+      owner
       title
       description
-      owner
       locations {
         nextToken
       }
-    }
-    notes {
-      items {
-        id
-        owner
-        note
-      }
-      nextToken
     }
   }
 }
@@ -81,23 +77,16 @@ export const updateLocation = `mutation UpdateLocation($input: UpdateLocationInp
   updateLocation(input: $input) {
     id
     owner
+    mapstoryID
     title
     mapstory {
       id
+      owner
       title
       description
-      owner
       locations {
         nextToken
       }
-    }
-    notes {
-      items {
-        id
-        owner
-        note
-      }
-      nextToken
     }
   }
 }
@@ -106,87 +95,14 @@ export const deleteLocation = `mutation DeleteLocation($input: DeleteLocationInp
   deleteLocation(input: $input) {
     id
     owner
+    mapstoryID
     title
     mapstory {
       id
+      owner
       title
       description
-      owner
       locations {
-        nextToken
-      }
-    }
-    notes {
-      items {
-        id
-        owner
-        note
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const createNote = `mutation CreateNote($input: CreateNoteInput!) {
-  createNote(input: $input) {
-    id
-    owner
-    note
-    location {
-      id
-      owner
-      title
-      mapstory {
-        id
-        title
-        description
-        owner
-      }
-      notes {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const updateNote = `mutation UpdateNote($input: UpdateNoteInput!) {
-  updateNote(input: $input) {
-    id
-    owner
-    note
-    location {
-      id
-      owner
-      title
-      mapstory {
-        id
-        title
-        description
-        owner
-      }
-      notes {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const deleteNote = `mutation DeleteNote($input: DeleteNoteInput!) {
-  deleteNote(input: $input) {
-    id
-    owner
-    note
-    location {
-      id
-      owner
-      title
-      mapstory {
-        id
-        title
-        description
-        owner
-      }
-      notes {
         nextToken
       }
     }

@@ -1,29 +1,38 @@
 type Mapstory
   @model(subscriptions: { level: public })
   @searchable
-  @auth(rules: [{ allow: owner }]) {
+  @auth(
+    rules: [
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, update, delete]
+      }
+    ]
+  ) {
   id: ID!
+  owner: String
   title: String!
   description: String!
-  owner: String!
-  locations: [Location] @connection(name: "MapstoryLocations")
+  locations: [Location] @connection(keyName: "byMapstory", fields: ["id"])
 }
 
 type Location
   @model(subscriptions: { level: public })
-  @auth(rules: [{ allow: owner }]) {
+  @searchable
+  @auth(
+    rules: [
+      {
+        allow: owner
+        ownerField: "owner"
+        operations: [create, update, delete]
+      }
+    ]
+  )
+  @key(name: "byMapstory", fields: ["mapstoryID", "title"]) {
   id: ID!
   owner: String
+  mapstoryID: ID!
   title: String!
-  mapstory: Mapstory @connection(name: "MapstoryLocations")
-  notes: [Note] @connection(name: "LocationNotes")
-}
-
-type Note
-  @model(subscriptions: { level: public })
-  @auth(rules: [{ allow: owner }]) {
-  id: ID!
-  owner: String
-  note: String
-  location: Location @connection(name: "LocationNotes")
+  mapstory: Mapstory @connection(fields: ["mapstoryID"])
 }

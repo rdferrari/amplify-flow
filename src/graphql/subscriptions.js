@@ -4,13 +4,14 @@
 export const onCreateMapstory = `subscription OnCreateMapstory {
   onCreateMapstory {
     id
+    owner
     title
     description
-    owner
     locations {
       items {
         id
         owner
+        mapstoryID
         title
       }
       nextToken
@@ -21,13 +22,14 @@ export const onCreateMapstory = `subscription OnCreateMapstory {
 export const onUpdateMapstory = `subscription OnUpdateMapstory {
   onUpdateMapstory {
     id
+    owner
     title
     description
-    owner
     locations {
       items {
         id
         owner
+        mapstoryID
         title
       }
       nextToken
@@ -38,13 +40,14 @@ export const onUpdateMapstory = `subscription OnUpdateMapstory {
 export const onDeleteMapstory = `subscription OnDeleteMapstory {
   onDeleteMapstory {
     id
+    owner
     title
     description
-    owner
     locations {
       items {
         id
         owner
+        mapstoryID
         title
       }
       nextToken
@@ -56,23 +59,16 @@ export const onCreateLocation = `subscription OnCreateLocation {
   onCreateLocation {
     id
     owner
+    mapstoryID
     title
     mapstory {
       id
+      owner
       title
       description
-      owner
       locations {
         nextToken
       }
-    }
-    notes {
-      items {
-        id
-        owner
-        note
-      }
-      nextToken
     }
   }
 }
@@ -81,23 +77,16 @@ export const onUpdateLocation = `subscription OnUpdateLocation {
   onUpdateLocation {
     id
     owner
+    mapstoryID
     title
     mapstory {
       id
+      owner
       title
       description
-      owner
       locations {
         nextToken
       }
-    }
-    notes {
-      items {
-        id
-        owner
-        note
-      }
-      nextToken
     }
   }
 }
@@ -106,87 +95,14 @@ export const onDeleteLocation = `subscription OnDeleteLocation {
   onDeleteLocation {
     id
     owner
+    mapstoryID
     title
     mapstory {
       id
+      owner
       title
       description
-      owner
       locations {
-        nextToken
-      }
-    }
-    notes {
-      items {
-        id
-        owner
-        note
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const onCreateNote = `subscription OnCreateNote {
-  onCreateNote {
-    id
-    owner
-    note
-    location {
-      id
-      owner
-      title
-      mapstory {
-        id
-        title
-        description
-        owner
-      }
-      notes {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const onUpdateNote = `subscription OnUpdateNote {
-  onUpdateNote {
-    id
-    owner
-    note
-    location {
-      id
-      owner
-      title
-      mapstory {
-        id
-        title
-        description
-        owner
-      }
-      notes {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const onDeleteNote = `subscription OnDeleteNote {
-  onDeleteNote {
-    id
-    owner
-    note
-    location {
-      id
-      owner
-      title
-      mapstory {
-        id
-        title
-        description
-        owner
-      }
-      notes {
         nextToken
       }
     }
