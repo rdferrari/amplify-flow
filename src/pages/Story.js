@@ -30,7 +30,7 @@ class Story extends Component {
         //   location => location.id !== newLocation.id
         // );
 
-        const updatedLocations = [...prevLocations, newLocation];
+        const updatedLocations = [newLocation, ...prevLocations];
         const mapstory = { ...this.state.mapstory };
         mapstory.locations.items = updatedLocations;
         console.log(updatedLocations);

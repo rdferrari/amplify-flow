@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import { Auth, Hub } from "aws-amplify";
+import { Auth, Hub, API, graphqlOperation } from "aws-amplify";
 import Amplify from "aws-amplify";
 import awsconfig from "./aws-exports";
 import { Authenticator, AmplifyTheme } from "aws-amplify-react";
+
+import { listMapstorys } from "./graphql/queries";
 
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
@@ -13,6 +15,8 @@ import Story from "./pages/Story";
 import Navbar from "./components/Navbar";
 
 export const UserContext = React.createContext();
+
+console.log(API);
 
 Amplify.configure(awsconfig);
 
@@ -24,6 +28,7 @@ class App extends Component {
   componentDidMount() {
     console.dir(AmplifyTheme);
     this.getUserData();
+    this.getListMapstories();
 
     Hub.listen("auth", data => {
       const { payload } = data;
@@ -43,6 +48,7 @@ class App extends Component {
         this.getUserData();
         break;
       case "signUp":
+        console.log("sign up");
         break;
       case "signOut":
         this.setState({ user: null });
@@ -60,11 +66,22 @@ class App extends Component {
     }
   };
 
+  getListMapstories = async () => {
+    const result = await API.graphql({
+      query: listMapstorys,
+      variables: {},
+      authMode: "API_KEY"
+    });
+    console.log(result.data.listMapstorys.items);
+  };
+
   render() {
     const { user } = this.state;
 
     return !user ? (
-      <Authenticator theme={theme} />
+      <>
+        <Authenticator theme={theme} />
+      </>
     ) : (
       <UserContext.Provider value={{ user }}>
         <Router>

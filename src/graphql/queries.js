@@ -1,6 +1,25 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const listMapstorys = `query ListMapstorys(
+  $filter: ModelMapstoryFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listMapstorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      owner
+      title
+      description
+      locations {
+        nextToken
+      }
+    }
+    nextToken
+  }
+}
+`;
 export const getMapstory = `query GetMapstory($id: ID!) {
   getMapstory(id: $id) {
     id
@@ -19,12 +38,18 @@ export const getMapstory = `query GetMapstory($id: ID!) {
   }
 }
 `;
-export const listMapstorys = `query ListMapstorys(
-  $filter: ModelMapstoryFilterInput
+export const searchMapstorys = `query SearchMapstorys(
+  $filter: SearchableMapstoryFilterInput
+  $sort: SearchableMapstorySortInput
   $limit: Int
   $nextToken: String
 ) {
-  listMapstorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  searchMapstorys(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+  ) {
     items {
       id
       owner
@@ -35,6 +60,7 @@ export const listMapstorys = `query ListMapstorys(
       }
     }
     nextToken
+    total
   }
 }
 `;
@@ -75,32 +101,6 @@ export const listLocations = `query ListLocations(
       }
     }
     nextToken
-  }
-}
-`;
-export const searchMapstorys = `query SearchMapstorys(
-  $filter: SearchableMapstoryFilterInput
-  $sort: SearchableMapstorySortInput
-  $limit: Int
-  $nextToken: String
-) {
-  searchMapstorys(
-    filter: $filter
-    sort: $sort
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      owner
-      title
-      description
-      locations {
-        nextToken
-      }
-    }
-    nextToken
-    total
   }
 }
 `;
