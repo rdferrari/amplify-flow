@@ -1,6 +1,54 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const listUsers = `query ListUsers(
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      username
+      email
+      owner
+      name
+      bio
+      createdAt
+      updatedAt
+      mapstories {
+        nextToken
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const getUser = `query GetUser($id: ID!) {
+  getUser(id: $id) {
+    id
+    username
+    email
+    owner
+    name
+    bio
+    createdAt
+    updatedAt
+    mapstories {
+      items {
+        id
+        userId
+        owner
+        title
+        description
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+}
+`;
 export const listMapstorys = `query ListMapstorys(
   $filter: ModelMapstoryFilterInput
   $limit: Int
@@ -9,9 +57,22 @@ export const listMapstorys = `query ListMapstorys(
   listMapstorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      userId
       owner
       title
       description
+      createdAt
+      updatedAt
+      user {
+        id
+        username
+        email
+        owner
+        name
+        bio
+        createdAt
+        updatedAt
+      }
       locations {
         nextToken
       }
@@ -23,61 +84,38 @@ export const listMapstorys = `query ListMapstorys(
 export const getMapstory = `query GetMapstory($id: ID!) {
   getMapstory(id: $id) {
     id
+    userId
     owner
     title
     description
+    createdAt
+    updatedAt
+    user {
+      id
+      username
+      email
+      owner
+      name
+      bio
+      createdAt
+      updatedAt
+      mapstories {
+        nextToken
+      }
+    }
     locations {
       items {
         id
         owner
-        mapstoryID
+        mapstoryId
         title
+        description
+        latitude
+        longitude
+        createdAt
+        updatedAt
       }
       nextToken
-    }
-  }
-}
-`;
-export const searchMapstorys = `query SearchMapstorys(
-  $filter: SearchableMapstoryFilterInput
-  $sort: SearchableMapstorySortInput
-  $limit: Int
-  $nextToken: String
-) {
-  searchMapstorys(
-    filter: $filter
-    sort: $sort
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      owner
-      title
-      description
-      locations {
-        nextToken
-      }
-    }
-    nextToken
-    total
-  }
-}
-`;
-export const getLocation = `query GetLocation($id: ID!) {
-  getLocation(id: $id) {
-    id
-    owner
-    mapstoryID
-    title
-    mapstory {
-      id
-      owner
-      title
-      description
-      locations {
-        nextToken
-      }
     }
   }
 }
@@ -91,45 +129,153 @@ export const listLocations = `query ListLocations(
     items {
       id
       owner
-      mapstoryID
+      mapstoryId
       title
+      description
+      latitude
+      longitude
+      createdAt
+      updatedAt
       mapstory {
         id
+        userId
         owner
         title
         description
+        createdAt
+        updatedAt
+      }
+      contents {
+        nextToken
       }
     }
     nextToken
   }
 }
 `;
-export const searchLocations = `query SearchLocations(
-  $filter: SearchableLocationFilterInput
-  $sort: SearchableLocationSortInput
-  $limit: Int
-  $nextToken: String
-) {
-  searchLocations(
-    filter: $filter
-    sort: $sort
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
+export const getLocation = `query GetLocation($id: ID!) {
+  getLocation(id: $id) {
+    id
+    owner
+    mapstoryId
+    title
+    description
+    latitude
+    longitude
+    createdAt
+    updatedAt
+    mapstory {
+      id
+      userId
+      owner
+      title
+      description
+      createdAt
+      updatedAt
+      user {
+        id
+        username
+        email
+        owner
+        name
+        bio
+        createdAt
+        updatedAt
+      }
+      locations {
+        nextToken
+      }
+    }
+    contents {
+      items {
+        id
+        owner
+        locationId
+        title
+        description
+        url
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+}
+`;
+export const getContent = `query GetContent($id: ID!) {
+  getContent(id: $id) {
+    id
+    owner
+    locationId
+    title
+    description
+    file {
+      bucket
+      region
+      key
+    }
+    url
+    createdAt
+    updatedAt
+    location {
       id
       owner
-      mapstoryID
+      mapstoryId
       title
+      description
+      latitude
+      longitude
+      createdAt
+      updatedAt
       mapstory {
         id
+        userId
         owner
         title
         description
+        createdAt
+        updatedAt
+      }
+      contents {
+        nextToken
+      }
+    }
+  }
+}
+`;
+export const listContents = `query ListContents(
+  $filter: ModelContentFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listContents(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      owner
+      locationId
+      title
+      description
+      file {
+        bucket
+        region
+        key
+      }
+      url
+      createdAt
+      updatedAt
+      location {
+        id
+        owner
+        mapstoryId
+        title
+        description
+        latitude
+        longitude
+        createdAt
+        updatedAt
       }
     }
     nextToken
-    total
   }
 }
 `;

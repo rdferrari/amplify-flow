@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import { Auth, Hub, API, graphqlOperation } from "aws-amplify";
+import { Auth, Hub, API } from "aws-amplify";
 import Amplify from "aws-amplify";
 import awsconfig from "./aws-exports";
 import { Authenticator, AmplifyTheme } from "aws-amplify-react";
 
-import { listMapstorys } from "./graphql/queries";
+import { listUsers } from "./graphql/queries";
 
 import Home from "./pages/Home";
+import LandPage from "./pages/LandPage";
 import Profile from "./pages/Profile";
 import Story from "./pages/Story";
 
@@ -16,19 +17,18 @@ import Navbar from "./components/Navbar";
 
 export const UserContext = React.createContext();
 
-console.log(API);
-
 Amplify.configure(awsconfig);
 
 class App extends Component {
   state = {
-    user: null
+    user: null,
+    users: []
   };
 
   componentDidMount() {
     console.dir(AmplifyTheme);
     this.getUserData();
-    this.getListMapstories();
+    this.getListUsers();
 
     Hub.listen("auth", data => {
       const { payload } = data;
@@ -66,21 +66,30 @@ class App extends Component {
     }
   };
 
-  getListMapstories = async () => {
+  getListUsers = async () => {
     const result = await API.graphql({
-      query: listMapstorys,
+      query: listUsers,
       variables: {},
       authMode: "API_KEY"
     });
-    console.log(result.data.listMapstorys.items);
+    console.log(result.data.listUsers.items);
+    this.setState({ users: result.data.listUsers.items });
   };
 
   render() {
-    const { user } = this.state;
+    const { user, users } = this.state;
 
     return !user ? (
       <>
-        <Authenticator theme={theme} />
+        <Router>
+          <Route exact path="/" component={LandPage} />
+          <Authenticator theme={theme} />
+          {!users ? (
+            <p>loanding...</p>
+          ) : (
+            users.map(user => <p key={user.id}>{user.id}</p>)
+          )}
+        </Router>
       </>
     ) : (
       <UserContext.Provider value={{ user }}>

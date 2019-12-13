@@ -1,6 +1,5 @@
-type Mapstory
+type User
   @model(subscriptions: { level: public })
-  @searchable
   @auth(
     rules: [
       { allow: owner, ownerField: "owner" }
@@ -8,25 +7,81 @@ type Mapstory
     ]
   ) {
   id: ID!
+  username: String!
+  email: String!
   owner: String
-  title: String!
-  description: String!
-  locations: [Location] @connection(keyName: "byMapstory", fields: ["id"])
+  name: String
+  bio: String
+  mapstories: [Mapstory] @connection(keyName: "byUser", fields: ["id"])
+  createdAt: String!
+  updatedAt: String
 }
 
-type Location
+type Mapstory
   @model(subscriptions: { level: public })
-  @searchable
   @auth(
     rules: [
       { allow: owner, ownerField: "owner" }
       { allow: public, provider: apiKey, operations: [read] }
     ]
   )
-  @key(name: "byMapstory", fields: ["mapstoryID", "title"]) {
+  @key(name: "byUser", fields: ["userId"]) {
+  id: ID!
+  userId: ID!
+  user: User @connection(fields: ["userId"])
+  owner: String
+  title: String!
+  description: String!
+  locations: [Location] @connection(keyName: "byMapstory", fields: ["id"])
+  createdAt: String!
+  updatedAt: String
+}
+
+type Location
+  @model(subscriptions: { level: public })
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "owner" }
+      { allow: public, provider: apiKey, operations: [read] }
+    ]
+  )
+  @key(name: "byMapstory", fields: ["mapstoryId"]) {
   id: ID!
   owner: String
-  mapstoryID: ID!
+  mapstoryId: ID!
+  mapstory: Mapstory @connection(fields: ["mapstoryId"])
   title: String!
-  mapstory: Mapstory @connection(fields: ["mapstoryID"])
+  description: String
+  latitude: Float!
+  longitude: Float!
+  contents: [Content] @connection(keyName: "byLocation", fields: ["id"])
+  createdAt: String!
+  updatedAt: String
+}
+
+type Content
+  @model(subscriptions: { level: public })
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "owner" }
+      { allow: public, provider: apiKey, operations: [read] }
+    ]
+  )
+  @key(name: "byLocation", fields: ["locationId", "title"]) {
+  id: ID!
+  owner: String
+  locationId: ID!
+  location: Location @connection(fields: ["locationId"])
+  title: String!
+  description: String
+  file: S3Object
+  url: String
+  createdAt: String!
+  updatedAt: String
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
 }
