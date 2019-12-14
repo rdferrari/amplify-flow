@@ -28,8 +28,7 @@ const StoriesList = ({ searchResults }) => {
         {({ data, loading, error }) => {
           if (error) return <p>error</p>;
           if (loading || !data.listMapstorys) return <Loading />;
-          const mapstories =
-            searchResults.length > 0 ? searchResults : data.listMapstorys.items;
+          const mapstories = data.listMapstorys.items;
 
           return (
             <>

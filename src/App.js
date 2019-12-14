@@ -87,7 +87,7 @@ class App extends Component {
           {!users ? (
             <p>loanding...</p>
           ) : (
-            users.map(user => <p key={user.id}>{user.id}</p>)
+            users.map(user => <p key={user.id}>{user.name}</p>)
           )}
         </Router>
       </>
@@ -97,7 +97,7 @@ class App extends Component {
           <>
             <Navbar user={user.username} handleSignOut={this.handleSignOut} />
             <div className="app-box">
-              <Route exact path="/" component={Home} />
+              <Route exact path="/" component={() => <Home user={user} />} />
               <Route path="/profile" component={Profile} />
               <Route
                 path="/stories/:storyId"
