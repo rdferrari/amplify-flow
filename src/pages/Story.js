@@ -3,12 +3,16 @@ import { Link } from "react-router-dom";
 import { API, graphqlOperation } from "aws-amplify";
 import { getMapstory } from "../graphql/queries";
 import NewLocation from "../components/NewLocation";
-import { onCreateLocation } from "../graphql/subscriptions";
+import { onCreateLocation, onUpdateMapstory } from "../graphql/subscriptions";
+import { updateMapstory } from "../graphql/mutations";
 
 class Story extends Component {
   state = {
     mapstory: null,
-    isLoading: true
+    isLoading: true,
+    id: this.props.storyId,
+    title: "",
+    description: ""
   };
 
   componentDidMount() {
@@ -24,29 +28,64 @@ class Story extends Component {
         const updatedLocations = [newLocation, ...prevLocations];
         const mapstory = { ...this.state.mapstory };
         mapstory.locations.items = updatedLocations;
-        console.log(updatedLocations);
         this.setState({ mapstory });
+      }
+    });
+    this.updateMapstoryListener = API.graphql(
+      graphqlOperation(onUpdateMapstory)
+    ).subscribe({
+      next: mapstoryData => {
+        const updatedMapstory = mapstoryData.value.data.onUpdateMapstory;
+        this.setState({ mapstory: updatedMapstory });
       }
     });
   }
 
   handleGetMapstory = async () => {
+    const { id } = this.state;
     const input = {
-      id: this.props.storyId
+      id
     };
     const result = await API.graphql(graphqlOperation(getMapstory, input));
     this.setState({
       mapstory: result.data.getMapstory,
+      title: result.data.getMapstory.title,
+      description: result.data.getMapstory.description,
       isLoading: false
     });
   };
 
-  // componentWillUnmount() {
-  //   this.onCreateLocation.unsubscribe();
-  // }
+  handleUpdateMapstory = async event => {
+    event.preventDefault();
+    const { id, title, description } = this.state;
+    const input = { id, title, description };
+    const result = await API.graphql(
+      graphqlOperation(updateMapstory, { input })
+    );
+    console.log(result);
+    this.setState({
+      title: result.data.updateMapstory.title,
+      description: result.data.updateMapstory.description
+    });
+  };
+
+  handleChangeMapstory = event => {
+    event.preventDefault();
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  };
+
+  componentWillUnmount() {
+    this.updateMapstoryListener.unsubscribe();
+  }
 
   render() {
-    const { mapstory, isLoading } = this.state;
+    const { mapstory, isLoading, title, description } = this.state;
 
     if (isLoading) {
       return <p>Loading</p>;
@@ -57,6 +96,23 @@ class Story extends Component {
         <Link to="/">back to Mapstories list</Link>
         <p>{mapstory.title}</p>
         <p>{mapstory.description}</p>
+
+        <form onSubmit={this.handleUpdateMapstory}>
+          <input
+            type="text"
+            onChange={this.handleChangeMapstory}
+            name="title"
+            value={title}
+          />
+          <input
+            type="text"
+            onChange={this.handleChangeMapstory}
+            name="description"
+            value={description}
+          />
+          <button type="submit">update</button>
+        </form>
+
         <NewLocation username={mapstory.owner} storyId={this.props.storyId} />
         {!mapstory.locations ? (
           <p>loading...</p>
@@ -70,8 +126,6 @@ class Story extends Component {
             </div>
           ))
         )}
-
-        {console.log(mapstory.locations)}
       </>
     );
   }

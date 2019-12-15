@@ -32,9 +32,9 @@ class MapstoriesList extends Component {
     });
   };
 
-  componentWillUnmount() {
-    this.createMapstoryListener.unsubscribe();
-  }
+  // componentWillUnmount() {
+  //   this.createMapstoryListener.unsubscribe();
+  // }
 
   render() {
     return (
