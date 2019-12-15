@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { listUsers } from "../graphql/queries";
 import { createUser, updateUser } from "../graphql/mutations";
-import NewStory from "../components/NewStory";
-import StoriesList from "../components/StoriesList";
+import { onUpdateUser } from "../graphql/subscriptions";
+import NewMapstory from "../components/NewMapstory";
+import MapstoriesList from "../components/MapstoriesList";
 
 class Home extends Component {
   state = {
@@ -16,6 +17,21 @@ class Home extends Component {
 
   componentDidMount() {
     this.getUsers();
+    this.updateUserListener = API.graphql(
+      graphqlOperation(onUpdateUser)
+    ).subscribe({
+      next: userData => {
+        const { users } = this.state;
+        const updatedUser = userData.value.data.onUpdateUser;
+        const index = users.findIndex(user => user.id === updatedUser.id);
+        const updatedUsers = [
+          ...users.slice(0, index),
+          updatedUser,
+          ...users.slice(index + 1)
+        ];
+        this.setState({ users: updatedUsers });
+      }
+    });
   }
 
   componentDidUpdate() {
@@ -77,8 +93,14 @@ class Home extends Component {
     });
   };
 
+  componentWillUnmount() {
+    this.updateUserListener.unsubscribe();
+  }
+
   render() {
-    const { users, name, bio } = this.state;
+    const { users, name, bio, id } = this.state;
+
+    console.log(id);
 
     return (
       <>
@@ -110,8 +132,8 @@ class Home extends Component {
           <button type="submit">Update</button>
         </form>
 
-        <NewStory />
-        <StoriesList />
+        <NewMapstory userId={id} />
+        <MapstoriesList />
       </>
     );
   }

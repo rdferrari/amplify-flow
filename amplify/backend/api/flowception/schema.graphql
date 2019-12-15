@@ -33,7 +33,7 @@ type Mapstory
   title: String!
   description: String!
   locations: [Location] @connection(keyName: "byMapstory", fields: ["id"])
-  createdAt: String!
+  createdAt: String
   updatedAt: String
 }
 
@@ -55,7 +55,7 @@ type Location
   latitude: Float!
   longitude: Float!
   contents: [Content] @connection(keyName: "byLocation", fields: ["id"])
-  createdAt: String!
+  createdAt: String
   updatedAt: String
 }
 
@@ -76,7 +76,7 @@ type Content
   description: String
   file: S3Object
   url: String
-  createdAt: String!
+  createdAt: String
   updatedAt: String
 }
 

@@ -18,18 +18,9 @@ class Story extends Component {
     ).subscribe({
       next: locationData => {
         const newLocation = locationData.value.data.onCreateLocation;
-        console.log(newLocation, this.state.mapstory);
-
         const prevLocations = this.state.mapstory.locations.items.filter(
           location => location.id !== newLocation.id
         );
-
-        // console.log(mapLocations);
-
-        // const prevLocations = mapLocations.filter(
-        //   location => location.id !== newLocation.id
-        // );
-
         const updatedLocations = [newLocation, ...prevLocations];
         const mapstory = { ...this.state.mapstory };
         mapstory.locations.items = updatedLocations;
@@ -50,6 +41,10 @@ class Story extends Component {
     });
   };
 
+  // componentWillUnmount() {
+  //   this.onCreateLocation.unsubscribe();
+  // }
+
   render() {
     const { mapstory, isLoading } = this.state;
 
@@ -62,11 +57,19 @@ class Story extends Component {
         <Link to="/">back to Mapstories list</Link>
         <p>{mapstory.title}</p>
         <p>{mapstory.description}</p>
-        <p>{mapstory.id}</p>
         <NewLocation username={mapstory.owner} storyId={this.props.storyId} />
-        {mapstory.locations.items.map(location => (
-          <p key={location.id}>{location.title}</p>
-        ))}
+        {!mapstory.locations ? (
+          <p>loading...</p>
+        ) : (
+          mapstory.locations.items.map(location => (
+            <div key={location.id}>
+              <p>{location.title}</p>
+              <p>{location.description}</p>
+              <p>{location.latitude}</p>
+              <p>{location.longitude}</p>
+            </div>
+          ))
+        )}
 
         {console.log(mapstory.locations)}
       </>

@@ -3,7 +3,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { createMapstory } from "../graphql/mutations";
 import { UserContext } from "../App";
 
-class NewStory extends Component {
+class NewMapstory extends Component {
   state = {
     title: "",
     description: ""
@@ -28,7 +28,8 @@ class NewStory extends Component {
       const input = {
         title,
         description,
-        owner: user
+        owner: user,
+        userId: this.props.userId
       };
 
       console.log(title, description, user);
@@ -56,7 +57,7 @@ class NewStory extends Component {
       <UserContext.Consumer>
         {({ user }) => (
           <>
-            <h1>Create your new story</h1>
+            <h1>New Mapstory</h1>
             <form>
               <input
                 name="title"
@@ -81,4 +82,4 @@ class NewStory extends Component {
   }
 }
 
-export default NewStory;
+export default NewMapstory;

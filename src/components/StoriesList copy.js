@@ -34,11 +34,11 @@ const StoriesList = ({ searchResults }) => {
             <>
               {mapstories.map(mapstory => (
                 <div key={mapstory.id}>
-                  <Link to={`/stories/${mapstory.id}`}>
-                    <h2>{mapstory.title}</h2>
-                  </Link>
+                  <h2>{mapstory.title}</h2>
                   <p>{mapstory.description}</p>
-                  <p>{mapstory.owner}</p>
+                  <Link to={`/stories/${mapstory.id}`}>
+                    <p>Locations</p>
+                  </Link>
                 </div>
               ))}
             </>

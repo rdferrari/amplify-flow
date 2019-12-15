@@ -4,7 +4,10 @@ import { createLocation } from "../graphql/mutations";
 
 class NewLocation extends Component {
   state = {
-    title: ""
+    title: "",
+    description: "",
+    latitude: "",
+    longitude: ""
   };
 
   handleAddLocation = event => {
@@ -22,14 +25,15 @@ class NewLocation extends Component {
     event.preventDefault();
 
     try {
-      const { title } = this.state;
+      const { title, description, latitude, longitude } = this.state;
       const input = {
         title,
-        mapstoryID: this.props.storyId,
+        description,
+        latitude,
+        longitude,
+        mapstoryId: this.props.storyId,
         owner: this.props.username
       };
-
-      console.log(title);
 
       const result = await API.graphql(
         graphqlOperation(createLocation, {
@@ -39,7 +43,10 @@ class NewLocation extends Component {
       console.info(`Created location: id ${result.data.createLocation.id}`);
 
       this.setState({
-        title: ""
+        title: "",
+        description: "",
+        latitude: "",
+        longitude: ""
       });
     } catch (err) {
       console.error("Error adding new location", err);
@@ -47,17 +54,35 @@ class NewLocation extends Component {
   };
 
   render() {
-    const { title } = this.state;
+    const { title, description, latitude, longitude } = this.state;
 
     return (
       <>
-        <h1>Create your new story</h1>
+        <h1>New Location</h1>
         <form>
           <input
             name="title"
             placeholder="Location title"
             onChange={this.handleAddLocation}
             value={title}
+          />
+          <input
+            name="description"
+            placeholder="Description"
+            onChange={this.handleAddLocation}
+            value={description}
+          />
+          <input
+            name="latitude"
+            placeholder="Latitude"
+            onChange={this.handleAddLocation}
+            value={latitude}
+          />
+          <input
+            name="longitude"
+            placeholder="Longitude"
+            onChange={this.handleAddLocation}
+            value={longitude}
           />
           <button onClick={e => this.AddLocation(e)}>Create location</button>
         </form>
