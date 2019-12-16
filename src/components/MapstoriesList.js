@@ -32,18 +32,19 @@ class MapstoriesList extends Component {
     });
   };
 
-  // componentWillUnmount() {
-  //   this.createMapstoryListener.unsubscribe();
-  // }
+  componentWillUnmount() {
+    this.createMapstoryListener.unsubscribe();
+  }
 
   render() {
     return (
       <>
+        <h2>Mapstories list</h2>
         {this.state.mapstories.map(mapstory => (
           <div key={mapstory.id}>
             <h2>{mapstory.title}</h2>
             <p>{mapstory.description}</p>
-            <Link to={`/stories/${mapstory.id}`}>
+            <Link to={`/mapstory/${mapstory.id}`}>
               <p>Locations</p>
             </Link>
           </div>

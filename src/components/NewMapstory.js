@@ -57,7 +57,7 @@ class NewMapstory extends Component {
       <UserContext.Consumer>
         {({ user }) => (
           <>
-            <h1>New Mapstory</h1>
+            <h2>New Mapstory</h2>
             <form>
               <input
                 name="title"

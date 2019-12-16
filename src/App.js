@@ -11,7 +11,8 @@ import { listUsers } from "./graphql/queries";
 import Home from "./pages/Home";
 import LandPage from "./pages/LandPage";
 import Profile from "./pages/Profile";
-import Story from "./pages/Story";
+import Mapstory from "./pages/Mapstory";
+import Location from "./pages/Location";
 
 import Navbar from "./components/Navbar";
 
@@ -72,7 +73,6 @@ class App extends Component {
       variables: {},
       authMode: "API_KEY"
     });
-    console.log(result.data.listUsers.items);
     this.setState({ users: result.data.listUsers.items });
   };
 
@@ -100,9 +100,15 @@ class App extends Component {
               <Route exact path="/" component={() => <Home user={user} />} />
               <Route path="/profile" component={Profile} />
               <Route
-                path="/stories/:storyId"
+                path="/mapstory/:storyId"
                 component={({ match }) => (
-                  <Story storyId={match.params.storyId} />
+                  <Mapstory storyId={match.params.storyId} />
+                )}
+              />
+              <Route
+                path="/location/:locationId"
+                component={({ match }) => (
+                  <Location locationId={match.params.locationId} />
                 )}
               />
             </div>

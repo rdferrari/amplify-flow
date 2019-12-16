@@ -93,17 +93,16 @@ class Home extends Component {
     });
   };
 
-  componentWillUnmount() {
-    this.updateUserListener.unsubscribe();
-  }
+  // componentWillUnmount() {
+  //   this.updateUserListener.unsubscribe();
+  // }
 
   render() {
     const { users, name, bio, id } = this.state;
 
-    console.log(id);
-
     return (
       <>
+        <h2>User</h2>
         {!users ? (
           <p>loading...</p>
         ) : (
@@ -114,6 +113,8 @@ class Home extends Component {
             </div>
           ))
         )}
+
+        <h3>Update user</h3>
 
         <form onSubmit={this.handleUpdateUser}>
           <input

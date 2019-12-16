@@ -6,7 +6,7 @@ import NewLocation from "../components/NewLocation";
 import { onCreateLocation, onUpdateMapstory } from "../graphql/subscriptions";
 import { updateMapstory } from "../graphql/mutations";
 
-class Story extends Component {
+class Mapstory extends Component {
   state = {
     mapstory: null,
     isLoading: true,
@@ -62,7 +62,6 @@ class Story extends Component {
     const result = await API.graphql(
       graphqlOperation(updateMapstory, { input })
     );
-    console.log(result);
     this.setState({
       title: result.data.updateMapstory.title,
       description: result.data.updateMapstory.description
@@ -93,6 +92,7 @@ class Story extends Component {
 
     return (
       <>
+        <h2>Mapstory</h2>
         <Link to="/">back to Mapstories list</Link>
         <p>{mapstory.title}</p>
         <p>{mapstory.description}</p>
@@ -114,6 +114,7 @@ class Story extends Component {
         </form>
 
         <NewLocation username={mapstory.owner} storyId={this.props.storyId} />
+        <h3>Locations list</h3>
         {!mapstory.locations ? (
           <p>loading...</p>
         ) : (
@@ -121,8 +122,9 @@ class Story extends Component {
             <div key={location.id}>
               <p>{location.title}</p>
               <p>{location.description}</p>
-              <p>{location.latitude}</p>
-              <p>{location.longitude}</p>
+              <Link to={`/location/${location.id}`}>
+                <p>Contents</p>
+              </Link>
             </div>
           ))
         )}
@@ -131,4 +133,4 @@ class Story extends Component {
   }
 }
 
-export default Story;
+export default Mapstory;
