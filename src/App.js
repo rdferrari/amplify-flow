@@ -137,6 +137,11 @@ const theme = {
     ...AmplifyTheme.sectionHeader,
     backgroundColor: "#ffffff",
     color: "#000000"
+  },
+  formSection: {
+    ...AmplifyTheme.formSection,
+    backgroundColor: "#fff",
+    border: "none"
   }
 };
 

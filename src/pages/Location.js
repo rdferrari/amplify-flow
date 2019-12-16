@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { API, graphqlOperation } from "aws-amplify";
+import { S3Image } from "aws-amplify-react";
 import { getLocation } from "../graphql/queries";
 import NewContent from "../components/NewContent";
 import { onCreateContent, onUpdateLocation } from "../graphql/subscriptions";
@@ -9,6 +10,7 @@ import { updateLocation } from "../graphql/mutations";
 class Location extends Component {
   state = {
     location: null,
+    contents: [],
     isLoading: true,
     id: this.props.locationId,
     title: "",
@@ -17,6 +19,9 @@ class Location extends Component {
 
   componentDidMount() {
     this.handleGetLocation();
+  }
+
+  componentDidUpdate() {
     this.createContentListener = API.graphql(
       graphqlOperation(onCreateContent)
     ).subscribe({
@@ -48,12 +53,17 @@ class Location extends Component {
     };
     const result = await API.graphql(graphqlOperation(getLocation, input));
 
+    console.log(result.data.getLocation);
+
     this.setState({
+      contents: result.data.getLocation.contents.items,
       location: result.data.getLocation,
       title: result.data.getLocation.title,
       description: result.data.getLocation.description,
       isLoading: false
     });
+
+    console.log(this.state.contents);
   };
 
   handleUpdateLocation = async event => {
@@ -64,6 +74,7 @@ class Location extends Component {
       graphqlOperation(updateLocation, { input })
     );
     this.setState({
+      location: result.data.updateLocation,
       title: result.data.updateLocation.title,
       description: result.data.updateLocation.description
     });
@@ -94,7 +105,9 @@ class Location extends Component {
     return (
       <>
         <h2>Location</h2>
-        <Link to="/">back to Mapstories list</Link>
+        <Link to={`/mapstory/${location.mapstoryId}`}>
+          back to Mapstories list
+        </Link>
         <p>{location.title}</p>
         <p>{location.description}</p>
 
@@ -124,10 +137,9 @@ class Location extends Component {
         ) : (
           location.contents.items.map(content => (
             <div key={content.id}>
+              <S3Image imgKey={content.url} />
               <p>{content.title}</p>
               <p>{content.description}</p>
-              <p>{content.latitude}</p>
-              <p>{content.longitude}</p>
             </div>
           ))
         )}

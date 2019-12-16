@@ -17,6 +17,7 @@ class Mapstory extends Component {
 
   componentDidMount() {
     this.handleGetMapstory();
+    console.log(this.state.mapstory);
     this.createLocationListener = API.graphql(
       graphqlOperation(onCreateLocation)
     ).subscribe({
