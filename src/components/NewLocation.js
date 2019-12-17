@@ -7,7 +7,8 @@ class NewLocation extends Component {
     title: "",
     description: "",
     latitude: "",
-    longitude: ""
+    longitude: "",
+    showNewLocation: false
   };
 
   handleAddLocation = event => {
@@ -53,8 +54,24 @@ class NewLocation extends Component {
     }
   };
 
+  handleShowNewLocation = () => {
+    this.setState({
+      showNewLocation: !this.state.showNewLocation
+    });
+  };
+
   render() {
-    const { title, description, latitude, longitude } = this.state;
+    const {
+      title,
+      description,
+      latitude,
+      longitude,
+      showNewLocation
+    } = this.state;
+
+    if (showNewLocation === false) {
+      return <button onClick={this.handleShowNewLocation}>New location</button>;
+    }
 
     return (
       <>
@@ -86,6 +103,9 @@ class NewLocation extends Component {
           />
           <button onClick={e => this.AddLocation(e)}>Create location</button>
         </form>
+        <button onClick={this.handleShowNewLocation}>
+          Back to Locations list
+        </button>
       </>
     );
   }

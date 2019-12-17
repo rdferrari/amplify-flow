@@ -5,6 +5,7 @@ import { getMapstory } from "../graphql/queries";
 import NewLocation from "../components/NewLocation";
 import { onCreateLocation, onUpdateMapstory } from "../graphql/subscriptions";
 import { updateMapstory } from "../graphql/mutations";
+import LocationsList from "../components/LocationsList";
 
 class Mapstory extends Component {
   state = {
@@ -12,12 +13,12 @@ class Mapstory extends Component {
     isLoading: true,
     id: this.props.storyId,
     title: "",
-    description: ""
+    description: "",
+    showUpdateMapstory: false
   };
 
   componentDidMount() {
     this.handleGetMapstory();
-    console.log(this.state.mapstory);
     this.createLocationListener = API.graphql(
       graphqlOperation(onCreateLocation)
     ).subscribe({
@@ -65,7 +66,8 @@ class Mapstory extends Component {
     );
     this.setState({
       title: result.data.updateMapstory.title,
-      description: result.data.updateMapstory.description
+      description: result.data.updateMapstory.description,
+      showUpdateMapstory: false
     });
   };
 
@@ -84,20 +86,27 @@ class Mapstory extends Component {
     this.updateMapstoryListener.unsubscribe();
   }
 
-  render() {
-    const { mapstory, isLoading, title, description } = this.state;
+  handleShowUpdateMapstoy = () => {
+    this.setState({
+      showUpdateMapstory: !this.state.showUpdateMapstory
+    });
+  };
 
-    if (isLoading) {
-      return <p>Loading</p>;
-    }
-
+  renderMapstory() {
+    const { mapstory } = this.state;
     return (
       <>
-        <h2>Mapstory</h2>
-        <Link to="/">back to Mapstories list</Link>
         <p>{mapstory.title}</p>
         <p>{mapstory.description}</p>
+        <button onClick={this.handleShowUpdateMapstoy}>edit</button>
+      </>
+    );
+  }
 
+  renderUpdateMaostory() {
+    const { title, description } = this.state;
+    return (
+      <>
         <form onSubmit={this.handleUpdateMapstory}>
           <input
             type="text"
@@ -113,22 +122,27 @@ class Mapstory extends Component {
           />
           <button type="submit">update</button>
         </form>
+        <button onClick={this.handleShowUpdateMapstoy}>cancel</button>
+      </>
+    );
+  }
 
+  render() {
+    const { mapstory, isLoading, showUpdateMapstory } = this.state;
+
+    if (isLoading) {
+      return <p>Loading</p>;
+    }
+
+    return (
+      <>
+        <h2>Mapstory</h2>
+        <Link to="/">back to Mapstories list</Link>
+        {showUpdateMapstory === false
+          ? this.renderMapstory()
+          : this.renderUpdateMaostory()}
         <NewLocation username={mapstory.owner} storyId={this.props.storyId} />
-        <h3>Locations list</h3>
-        {!mapstory.locations ? (
-          <p>loading...</p>
-        ) : (
-          mapstory.locations.items.map(location => (
-            <div key={location.id}>
-              <p>{location.title}</p>
-              <p>{location.description}</p>
-              <Link to={`/location/${location.id}`}>
-                <p>Contents</p>
-              </Link>
-            </div>
-          ))
-        )}
+        <LocationsList mapstory={mapstory} />
       </>
     );
   }
