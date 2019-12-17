@@ -8,7 +8,8 @@ class NewContent extends Component {
     title: "",
     description: "",
     file: "",
-    uploading: false
+    uploading: false,
+    showNewContent: false
   };
 
   handleAddContent = event => {
@@ -78,8 +79,18 @@ class NewContent extends Component {
     } else if (file === "") return null;
   };
 
+  handleShowNewContent = () => {
+    this.setState({
+      showNewContent: !this.state.showNewContent
+    });
+  };
+
   render() {
-    const { title, description } = this.state;
+    const { title, description, showNewContent } = this.state;
+
+    if (showNewContent === false) {
+      return <button onClick={this.handleShowNewContent}>New Content</button>;
+    }
 
     return (
       <>
@@ -104,15 +115,11 @@ class NewContent extends Component {
           />
 
           {this.uploadedImage()}
-
-          {/* {(uploading === true) & (file === "") ? (
-            <p>uploading</p>
-          ) : (
-            <S3Image imgKey={file} />
-          )} */}
-
           <button onClick={e => this.AddContent(e)}>Create content</button>
         </form>
+        <button onClick={this.handleShowNewContent}>
+          Back to contents list
+        </button>
       </>
     );
   }

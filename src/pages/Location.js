@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { API, graphqlOperation } from "aws-amplify";
-import { S3Image } from "aws-amplify-react";
 import { getLocation } from "../graphql/queries";
 import NewContent from "../components/NewContent";
 import { onCreateContent, onUpdateLocation } from "../graphql/subscriptions";
 import { updateLocation } from "../graphql/mutations";
+import ContentsList from "../components/ContentsList";
 
 class Location extends Component {
   state = {
@@ -14,7 +14,8 @@ class Location extends Component {
     isLoading: true,
     id: this.props.locationId,
     title: "",
-    description: ""
+    description: "",
+    showLocation: false
   };
 
   componentDidMount() {
@@ -76,7 +77,8 @@ class Location extends Component {
     this.setState({
       location: result.data.updateLocation,
       title: result.data.updateLocation.title,
-      description: result.data.updateLocation.description
+      description: result.data.updateLocation.description,
+      showLocation: false
     });
   };
 
@@ -91,26 +93,33 @@ class Location extends Component {
     });
   };
 
-  componentWillUnmount() {
-    this.updateLocationListener.unsubscribe();
-  }
+  // componentWillUnmount() {
+  //   this.updateLocationListener.unsubscribe();
+  // }
 
-  render() {
-    const { location, isLoading, title, description } = this.state;
+  handleShowEditLocation = () => {
+    this.setState({
+      showLocation: !this.state.showLocation
+    });
+  };
 
-    if (isLoading) {
-      return <p>Loading</p>;
-    }
-
+  renderLocation() {
+    const { location } = this.state;
     return (
       <>
         <h2>Location</h2>
-        <Link to={`/mapstory/${location.mapstoryId}`}>
-          back to Mapstories list
-        </Link>
         <p>{location.title}</p>
         <p>{location.description}</p>
+        <button onClick={this.handleShowEditLocation}>edit</button>
+      </>
+    );
+  }
 
+  renderEditLocation() {
+    const { title, description } = this.state;
+    return (
+      <>
+        <h2>Edit Location</h2>
         <form onSubmit={this.handleUpdateLocation}>
           <input
             type="text"
@@ -126,23 +135,33 @@ class Location extends Component {
           />
           <button type="submit">update</button>
         </form>
+        <button onClick={this.handleShowEditLocation}>cancel</button>
+      </>
+    );
+  }
+
+  render() {
+    const { location, isLoading, showLocation } = this.state;
+
+    if (isLoading) {
+      return <p>Loading</p>;
+    }
+
+    return (
+      <>
+        <Link to={`/mapstory/${location.mapstoryId}`}>
+          back to Mapstories list
+        </Link>
+
+        {showLocation === false
+          ? this.renderLocation()
+          : this.renderEditLocation()}
 
         <NewContent
           username={location.owner}
           locationId={this.props.locationId}
         />
-        <h3>Contents list</h3>
-        {!location.contents ? (
-          <p>loading...</p>
-        ) : (
-          location.contents.items.map(content => (
-            <div key={content.id}>
-              <S3Image imgKey={content.url} />
-              <p>{content.title}</p>
-              <p>{content.description}</p>
-            </div>
-          ))
-        )}
+        <ContentsList location={location} />
       </>
     );
   }
