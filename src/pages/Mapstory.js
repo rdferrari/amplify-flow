@@ -1,10 +1,15 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { API, graphqlOperation } from "aws-amplify";
 import { getMapstory } from "../graphql/queries";
 import NewLocation from "../components/NewLocation";
 import { onCreateLocation, onUpdateMapstory } from "../graphql/subscriptions";
-import { updateMapstory } from "../graphql/mutations";
+import {
+  updateMapstory,
+  deleteMapstory,
+  deleteLocation,
+  deleteContent
+} from "../graphql/mutations";
 import LocationsList from "../components/LocationsList";
 
 class Mapstory extends Component {
@@ -14,7 +19,8 @@ class Mapstory extends Component {
     id: this.props.storyId,
     title: "",
     description: "",
-    showUpdateMapstory: false
+    showUpdateMapstory: false,
+    deletedMapstory: false
   };
 
   componentDidMount() {
@@ -71,6 +77,19 @@ class Mapstory extends Component {
     });
   };
 
+  handleDeleteMapstory = async mapstoryId => {
+    const input = { id: mapstoryId };
+    const result = await API.graphql(
+      graphqlOperation(deleteMapstory, {
+        input
+      })
+    );
+    console.log(result.data);
+    this.setState({
+      deletedMapstory: true
+    });
+  };
+
   handleChangeMapstory = event => {
     event.preventDefault();
     const target = event.target;
@@ -94,11 +113,15 @@ class Mapstory extends Component {
 
   renderMapstory() {
     const { mapstory } = this.state;
+    console.log(mapstory.locations.items);
     return (
       <>
         <p>{mapstory.title}</p>
         <p>{mapstory.description}</p>
         <button onClick={this.handleShowUpdateMapstoy}>edit</button>
+        <button onClick={() => this.handleDeleteMapstory(mapstory.id)}>
+          delete
+        </button>
       </>
     );
   }
@@ -128,10 +151,17 @@ class Mapstory extends Component {
   }
 
   render() {
-    const { mapstory, isLoading, showUpdateMapstory } = this.state;
+    const {
+      mapstory,
+      isLoading,
+      showUpdateMapstory,
+      deletedMapstory
+    } = this.state;
 
     if (isLoading) {
       return <p>Loading</p>;
+    } else if (deletedMapstory === true) {
+      return <Redirect to="/" />;
     }
 
     return (

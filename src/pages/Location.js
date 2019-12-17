@@ -53,9 +53,6 @@ class Location extends Component {
       id
     };
     const result = await API.graphql(graphqlOperation(getLocation, input));
-
-    console.log(result.data.getLocation);
-
     this.setState({
       contents: result.data.getLocation.contents.items,
       location: result.data.getLocation,
@@ -63,8 +60,6 @@ class Location extends Component {
       description: result.data.getLocation.description,
       isLoading: false
     });
-
-    console.log(this.state.contents);
   };
 
   handleUpdateLocation = async event => {
