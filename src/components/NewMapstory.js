@@ -6,7 +6,8 @@ import { UserContext } from "../App";
 class NewMapstory extends Component {
   state = {
     title: "",
-    description: ""
+    description: "",
+    showNewMapstory: false
   };
 
   handleAddStory = event => {
@@ -43,15 +44,26 @@ class NewMapstory extends Component {
 
       this.setState({
         title: "",
-        description: ""
+        description: "",
+        showNewMapstory: !this.state.showNewMapstory
       });
     } catch (err) {
       console.error("Error adding new story", err);
     }
   };
 
+  handleShowNewMapstory = () => {
+    this.setState({
+      showNewMapstory: !this.state.showNewMapstory
+    });
+  };
+
   render() {
-    const { title, description } = this.state;
+    const { title, description, showNewMapstory } = this.state;
+
+    if (showNewMapstory === false) {
+      return <button onClick={this.handleShowNewMapstory}>New Mapstory</button>;
+    }
 
     return (
       <UserContext.Consumer>
@@ -75,6 +87,7 @@ class NewMapstory extends Component {
                 Create story
               </button>
             </form>
+            <button onClick={this.handleShowNewMapstory}>Cancel</button>
           </>
         )}
       </UserContext.Consumer>

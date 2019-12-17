@@ -5,6 +5,7 @@ import { createUser, updateUser } from "../graphql/mutations";
 import { onUpdateUser } from "../graphql/subscriptions";
 import NewMapstory from "../components/NewMapstory";
 import MapstoriesList from "../components/MapstoriesList";
+import User from "../components/User";
 
 class Home extends Component {
   state = {
@@ -12,7 +13,8 @@ class Home extends Component {
     username: this.props.user.username,
     id: "",
     name: "",
-    bio: ""
+    bio: "",
+    showUpdateUser: false
   };
 
   componentDidMount() {
@@ -78,7 +80,8 @@ class Home extends Component {
     const result = await API.graphql(graphqlOperation(updateUser, { input }));
     this.setState({
       name: result.data.updateUser.name,
-      bio: result.data.updateUser.bio
+      bio: result.data.updateUser.bio,
+      showUpdateUser: false
     });
   };
 
@@ -93,45 +96,30 @@ class Home extends Component {
     });
   };
 
+  handleShowUpdateUse = () => {
+    this.setState({
+      showUpdateUser: !this.state.showUpdateUser
+    });
+  };
+
   // componentWillUnmount() {
   //   this.updateUserListener.unsubscribe();
   // }
 
   render() {
-    const { users, name, bio, id } = this.state;
+    const { users, name, bio, id, showUpdateUser } = this.state;
 
     return (
       <>
-        <h2>User</h2>
-        {!users ? (
-          <p>loading...</p>
-        ) : (
-          users.map(user => (
-            <div key={user.id}>
-              <p>{user.name}</p>
-              <p>{user.bio}</p>
-            </div>
-          ))
-        )}
-
-        <h3>Update user</h3>
-
-        <form onSubmit={this.handleUpdateUser}>
-          <input
-            type="text"
-            onChange={this.handleChangeUser}
-            value={name}
-            name="name"
-          />
-          <input
-            type="text"
-            onChange={this.handleChangeUser}
-            value={bio}
-            name="bio"
-          />
-
-          <button type="submit">Update</button>
-        </form>
+        <User
+          users={users}
+          handleUpdateUser={this.handleUpdateUser}
+          handleChangeUser={this.handleChangeUser}
+          name={name}
+          bio={bio}
+          handleShowUpdateUser={this.handleShowUpdateUse}
+          showUpdateUser={showUpdateUser}
+        />
 
         <NewMapstory userId={id} />
         <MapstoriesList />
