@@ -11,6 +11,7 @@ const ContentsList = ({ location }) => {
       ) : (
         location.contents.items.map(content => (
           <div key={content.id}>
+            {console.log(content)}
             <S3Image imgKey={content.url} />
             <p>{content.title}</p>
             <p>{content.description}</p>
