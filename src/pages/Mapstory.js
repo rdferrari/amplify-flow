@@ -4,12 +4,7 @@ import { API, graphqlOperation } from "aws-amplify";
 import { getMapstory } from "../graphql/queries";
 import NewLocation from "../components/NewLocation";
 import { onCreateLocation, onUpdateMapstory } from "../graphql/subscriptions";
-import {
-  updateMapstory,
-  deleteMapstory,
-  deleteLocation,
-  deleteContent
-} from "../graphql/mutations";
+import { updateMapstory, deleteMapstory } from "../graphql/mutations";
 import LocationsList from "../components/LocationsList";
 
 class Mapstory extends Component {
@@ -113,21 +108,17 @@ class Mapstory extends Component {
 
   renderMapstory() {
     const { mapstory } = this.state;
-    console.log(mapstory.locations.items);
     return (
       <>
         <p>{mapstory.title}</p>
         <p>{mapstory.description}</p>
         <button onClick={this.handleShowUpdateMapstoy}>edit</button>
-        <button onClick={() => this.handleDeleteMapstory(mapstory.id)}>
-          delete
-        </button>
       </>
     );
   }
 
   renderUpdateMaostory() {
-    const { title, description } = this.state;
+    const { title, description, id } = this.state;
     return (
       <>
         <form onSubmit={this.handleUpdateMapstory}>
@@ -143,9 +134,10 @@ class Mapstory extends Component {
             name="description"
             value={description}
           />
-          <button type="submit">update</button>
+          <button type="submit">save</button>
         </form>
         <button onClick={this.handleShowUpdateMapstoy}>cancel</button>
+        <button onClick={() => this.handleDeleteMapstory(id)}>delete</button>
       </>
     );
   }
