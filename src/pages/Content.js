@@ -1,84 +1,56 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { API, graphqlOperation } from "aws-amplify";
-import { getLocation } from "../graphql/queries";
-import NewContent from "../components/NewContent";
-import { onCreateContent, onUpdateLocation } from "../graphql/subscriptions";
-import { updateLocation, deleteLocation } from "../graphql/mutations";
-import ContentsList from "../components/ContentsList";
+import { getContent } from "../graphql/queries";
+// import NewContent from "../components/NewContent";
+// import { onCreateContent, onUpdateLocation } from "../graphql/subscriptions";
+import { updateContent, deleteContent } from "../graphql/mutations";
+// import ContentsList from "../components/ContentsList";
 
-class Location extends Component {
+class Content extends Component {
   state = {
-    location: null,
-    contents: [],
+    content: null,
     isLoading: true,
-    id: this.props.locationId,
+    id: this.props.contentId,
     title: "",
     description: "",
-    showLocation: false,
-    deletedLocation: false
+    editedContent: false
   };
 
   componentDidMount() {
-    this.handleGetLocation();
+    this.handleGetContent();
   }
 
-  componentDidUpdate() {
-    this.createContentListener = API.graphql(
-      graphqlOperation(onCreateContent)
-    ).subscribe({
-      next: contentData => {
-        const newContent = contentData.value.data.onCreateContent;
-        const prevContents = this.state.location.contents.items.filter(
-          content => content.id !== newContent.id
-        );
-        const updatedContents = [newContent, ...prevContents];
-        const location = { ...this.state.location };
-        location.contents.items = updatedContents;
-        this.setState({ location });
-      }
-    });
-    this.updateLocationListener = API.graphql(
-      graphqlOperation(onUpdateLocation)
-    ).subscribe({
-      next: locationData => {
-        const updatedLocation = locationData.value.data.onUpdateLocation;
-        this.setState({ location: updatedLocation });
-      }
-    });
-  }
-
-  handleGetLocation = async () => {
+  handleGetContent = async () => {
     const { id } = this.state;
     const input = {
       id
     };
-    const result = await API.graphql(graphqlOperation(getLocation, input));
+    const result = await API.graphql(graphqlOperation(getContent, input));
     this.setState({
-      contents: result.data.getLocation.contents.items,
-      location: result.data.getLocation,
-      title: result.data.getLocation.title,
-      description: result.data.getLocation.description,
+      content: result.data.getContent,
+      title: result.data.getContent.title,
+      description: result.data.getContent.description,
       isLoading: false
     });
   };
 
-  handleUpdateLocation = async event => {
+  handleUpdateContent = async event => {
     event.preventDefault();
     const { id, title, description } = this.state;
     const input = { id, title, description };
     const result = await API.graphql(
-      graphqlOperation(updateLocation, { input })
+      graphqlOperation(updateContent, { input })
     );
     this.setState({
-      location: result.data.updateLocation,
-      title: result.data.updateLocation.title,
-      description: result.data.updateLocation.description,
-      showLocation: false
+      content: result.data.updateContent,
+      title: result.data.updateContent.title,
+      description: result.data.updateContent.description,
+      editedContent: true
     });
   };
 
-  handleChangeLocation = event => {
+  handleChangeContent = event => {
     event.preventDefault();
     const target = event.target;
     const value = target.value;
@@ -93,85 +65,59 @@ class Location extends Component {
   //   this.updateLocationListener.unsubscribe();
   // }
 
-  handleShowEditLocation = () => {
+  handleDeleteContent = async contentId => {
+    const input = { id: contentId };
+    await API.graphql(graphqlOperation(deleteContent, { input }));
     this.setState({
-      showLocation: !this.state.showLocation
+      editedContent: true
     });
   };
 
-  handleDeleteLocation = async locationId => {
-    const input = { id: locationId };
-    await API.graphql(graphqlOperation(deleteLocation, { input }));
-    this.setState({
-      deletedLocation: true
-    });
-  };
-
-  renderLocation() {
-    const { location } = this.state;
+  renderEditContent() {
+    const { title, description, id, content } = this.state;
     return (
       <>
-        <h2>Location</h2>
-        <p>{location.title}</p>
-        <p>{location.description}</p>
-        <button onClick={this.handleShowEditLocation}>edit</button>
-      </>
-    );
-  }
-
-  renderEditLocation() {
-    const { title, description, id } = this.state;
-    return (
-      <>
-        <h2>Edit Location</h2>
-        <form onSubmit={this.handleUpdateLocation}>
+        <h2>Edit Content</h2>
+        <form onSubmit={this.handleUpdateContent}>
           <input
             type="text"
-            onChange={this.handleChangeLocation}
+            onChange={this.handleChangeContent}
             name="title"
             value={title}
           />
           <input
             type="text"
-            onChange={this.handleChangeLocation}
+            onChange={this.handleChangeContent}
             name="description"
             value={description}
           />
           <button type="submit">save</button>
         </form>
-        <button onClick={this.handleShowEditLocation}>cancel</button>
-        <button onClick={() => this.handleDeleteLocation(id)}>delete</button>
+        <Link to={`/location/${content.locationId}`}>cancel</Link>
+        <button onClick={() => this.handleDeleteContent(id)}>delete</button>
       </>
     );
   }
 
   render() {
-    const { location, isLoading, showLocation, deletedLocation } = this.state;
+    const { content, isLoading, editedContent } = this.state;
 
     if (isLoading) {
       return <p>Loading</p>;
-    } else if (deletedLocation === true) {
-      return <Redirect to={`/mapstory/${location.mapstoryId}`} />;
+    } else if (editedContent === true) {
+      return <Redirect to={`/location/${content.locationId}`} />;
     }
 
     return (
       <>
-        <Link to={`/mapstory/${location.mapstoryId}`}>
-          back to Mapstories list
+        <Link to={`/location/${content.locationId}`}>
+          back to Locations list
         </Link>
 
-        {showLocation === false
-          ? this.renderLocation()
-          : this.renderEditLocation()}
-
-        <NewContent
-          username={location.owner}
-          locationId={this.props.locationId}
-        />
-        <ContentsList location={location} />
+        {this.renderEditContent()}
       </>
     );
   }
 }
 
-export default Location;
+export default Content;

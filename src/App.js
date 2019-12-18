@@ -13,6 +13,7 @@ import LandPage from "./pages/LandPage";
 import Profile from "./pages/Profile";
 import Mapstory from "./pages/Mapstory";
 import Location from "./pages/Location";
+import Content from "./pages/Content";
 
 import Navbar from "./components/Navbar";
 
@@ -109,6 +110,12 @@ class App extends Component {
                 path="/location/:locationId"
                 component={({ match }) => (
                   <Location locationId={match.params.locationId} />
+                )}
+              />
+              <Route
+                path="/content/:contentId"
+                component={({ match }) => (
+                  <Content contentId={match.params.contentId} />
                 )}
               />
             </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { S3Image } from "aws-amplify-react";
+import { Link } from "react-router-dom";
 
 const ContentsList = ({ location }) => {
   return (
@@ -13,6 +14,9 @@ const ContentsList = ({ location }) => {
             <S3Image imgKey={content.url} />
             <p>{content.title}</p>
             <p>{content.description}</p>
+            <Link to={`/content/${content.id}`}>
+              <p>Edit</p>
+            </Link>
           </div>
         ))
       )}
