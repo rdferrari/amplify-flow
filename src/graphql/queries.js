@@ -194,6 +194,7 @@ export const getLocation = `query GetLocation($id: ID!) {
         title
         description
         url
+        mediaType
         createdAt
         updatedAt
       }
@@ -215,6 +216,7 @@ export const getContent = `query GetContent($id: ID!) {
       key
     }
     url
+    mediaType
     createdAt
     updatedAt
     location {
@@ -261,6 +263,7 @@ export const listContents = `query ListContents(
         key
       }
       url
+      mediaType
       createdAt
       updatedAt
       location {
@@ -279,3 +282,21 @@ export const listContents = `query ListContents(
   }
 }
 `;
+
+export const listMediaTypes = `query 
+{
+  __type(name: "mediaTypes") {
+    name
+    enumValues {
+      name
+    }
+  }
+}`;
+
+export const getMediaTypes = `query GetMediaTypes($enum: String!) {
+  enum: __type(name: $enum) {
+    enumValues {
+      name
+    }
+  }
+}`;

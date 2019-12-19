@@ -234,6 +234,7 @@ export const createLocation = `mutation CreateLocation($input: CreateLocationInp
         title
         description
         url
+        mediaType
         createdAt
         updatedAt
       }
@@ -283,6 +284,7 @@ export const updateLocation = `mutation UpdateLocation($input: UpdateLocationInp
         title
         description
         url
+        mediaType
         createdAt
         updatedAt
       }
@@ -332,6 +334,7 @@ export const deleteLocation = `mutation DeleteLocation($input: DeleteLocationInp
         title
         description
         url
+        mediaType
         createdAt
         updatedAt
       }
@@ -353,6 +356,7 @@ export const createContent = `mutation CreateContent($input: CreateContentInput!
       key
     }
     url
+    mediaType
     createdAt
     updatedAt
     location {
@@ -394,6 +398,7 @@ export const updateContent = `mutation UpdateContent($input: UpdateContentInput!
       key
     }
     url
+    mediaType
     createdAt
     updatedAt
     location {
@@ -435,6 +440,7 @@ export const deleteContent = `mutation DeleteContent($input: DeleteContentInput!
       key
     }
     url
+    mediaType
     createdAt
     updatedAt
     location {

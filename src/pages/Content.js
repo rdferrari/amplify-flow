@@ -1,25 +1,29 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { API, graphqlOperation, Storage } from "aws-amplify";
-import { getContent } from "../graphql/queries";
-import { S3Image } from "aws-amplify-react";
+import { getContent, listMediaTypes } from "../graphql/queries";
 import { updateContent, deleteContent } from "../graphql/mutations";
+
+import ContentEdit from "../components/ContentEdit";
+import ContentUpload from "../components/ContentUpload";
 
 class Content extends Component {
   state = {
-    content: null,
-    isLoading: true,
-    id: this.props.contentId,
+    content: "",
     title: "",
     description: "",
-    url: null,
+    locationId: "",
+    url: "",
+    isLoading: true,
+    id: this.props.contentId,
     editedContent: false,
     uploading: false,
-    file: ""
+    mediaTypes: null
   };
 
   componentDidMount() {
     this.handleGetContent();
+    this.handleGetMediaTypes();
   }
 
   handleGetContent = async () => {
@@ -32,29 +36,66 @@ class Content extends Component {
       content: result.data.getContent,
       title: result.data.getContent.title,
       description: result.data.getContent.description,
+      locationId: result.data.getContent.locationId,
       url: result.data.getContent.url,
       isLoading: false
     });
   };
 
+  handleGetMediaTypes = async () => {
+    const result = await API.graphql(graphqlOperation(listMediaTypes));
+    console.log(result);
+    this.setState({ mediaTypes: result.data.listMediaTypes });
+  };
+
   handleUpdateContent = async event => {
     event.preventDefault();
-    const { title, description, url, id } = this.state;
+    const { id, title, description, locationId, url } = this.state;
     const input = {
       id,
       title,
       description,
+      locationId,
       url
     };
     const result = await API.graphql(
       graphqlOperation(updateContent, { input })
     );
     this.setState({
-      content: result.data.updateContent,
       title: result.data.updateContent.title,
       description: result.data.updateContent.description,
+      locationId: result.data.updateContent.locationId,
       url: result.data.updateContent.url,
       editedContent: true
+    });
+  };
+
+  handleDeleteContent = async contentId => {
+    const input = { id: contentId };
+    await API.graphql(graphqlOperation(deleteContent, { input }));
+    this.setState({
+      editedContent: true
+    });
+  };
+
+  handleDeleteFile = async imageUrl => {
+    const { id } = this.state;
+    const input = { id, url: null };
+    await API.graphql(graphqlOperation(updateContent, { input }));
+    Storage.remove(imageUrl).then(() => {
+      this.setState({ url: null });
+    });
+  };
+
+  handleUploadFile = async event => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const name = file.name;
+    const { id } = this.state;
+    const input = { id, url: name };
+    await API.graphql(graphqlOperation(updateContent, { input }));
+    Storage.put(name, file).then(() => {
+      this.setState({ url: name });
     });
   };
 
@@ -69,118 +110,42 @@ class Content extends Component {
     });
   };
 
-  // componentWillUnmount() {
-  //   this.updateLocationListener.unsubscribe();
-  // }
-
-  handleDeleteContent = async contentId => {
-    const input = { id: contentId };
-    await API.graphql(graphqlOperation(deleteContent, { input }));
-    this.setState({
-      editedContent: true
-    });
-  };
-
-  handleDeleteImage = async imageUrl => {
-    const { id } = this.state;
-    const input = { id, url: null };
-    await API.graphql(graphqlOperation(updateContent, { input }));
-    Storage.remove(imageUrl).then(() => {
-      this.setState({ noImage: true, url: null, file: "" });
-    });
-  };
-
-  uploadFile = event => {
-    event.preventDefault();
-    const file = event.target.files[0];
-    const name = file.name;
-
-    Storage.put(name, file).then(() => {
-      this.setState({ file: name, url: name });
-    });
-  };
-
-  uploadedImage = () => {
-    const { uploading, file } = this.state;
-    if ((uploading === true) & (file === "")) {
-      return <p>uploading</p>;
-    } else if (file !== "") {
-      return <S3Image imgKey={file} />;
-    } else if (file === "") return null;
-  };
-
-  handleUploading = () => {
-    this.setState({
-      uploading: true
-    });
-  };
-
-  renderEditContent() {
-    const { id, content, title, description, noImage } = this.state;
-
-    return (
-      <>
-        <h2>Edit Content</h2>
-
-        {content.url ? (
-          <>
-            <S3Image imgKey={content.url} />
-            <p onClick={() => this.handleDeleteImage(content.url)}>
-              delete image
-            </p>
-          </>
-        ) : null}
-
-        {this.uploadedImage()}
-
-        <form onSubmit={this.handleUpdateContent}>
-          <input
-            type="text"
-            onChange={this.handleChangeContent}
-            name="title"
-            value={title}
-          />
-          <input
-            type="text"
-            onChange={this.handleChangeContent}
-            name="description"
-            value={description}
-          />
-
-          {!content.url ? (
-            <>
-              <input
-                type="file"
-                onChange={this.uploadFile}
-                onClick={this.handleUploading}
-              />
-            </>
-          ) : null}
-
-          <button type="submit">save</button>
-        </form>
-        <Link to={`/location/${content.locationId}`}>cancel</Link>
-        <button onClick={() => this.handleDeleteContent(id)}>delete</button>
-      </>
-    );
-  }
-
   render() {
-    const { content, isLoading, editedContent } = this.state;
+    const {
+      isLoading,
+      editedContent,
+      locationId,
+      id,
+      title,
+      url,
+      description
+    } = this.state;
 
     if (isLoading) {
       return <p>Loading</p>;
     } else if (editedContent === true) {
-      return <Redirect to={`/location/${content.locationId}`} />;
+      return <Redirect to={`/location/${locationId}`} />;
     }
 
     return (
       <>
-        <Link to={`/location/${content.locationId}`}>
-          back to Locations list
-        </Link>
+        <Link to={`/location/${locationId}`}>back to Locations list</Link>
 
-        {this.renderEditContent()}
+        <ContentUpload
+          url={url}
+          handleDeleteFile={this.handleDeleteFile}
+          handleUploadFile={this.handleUploadFile}
+        />
+
+        <ContentEdit
+          id={id}
+          title={title}
+          description={description}
+          locationId={locationId}
+          handleUpdateContent={this.handleUpdateContent}
+          handleChangeContent={this.handleChangeContent}
+          handleDeleteContent={() => this.handleDeleteContent(id)}
+        />
       </>
     );
   }

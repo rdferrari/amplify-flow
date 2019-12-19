@@ -234,6 +234,7 @@ export const onCreateLocation = `subscription OnCreateLocation {
         title
         description
         url
+        mediaType
         createdAt
         updatedAt
       }
@@ -283,6 +284,7 @@ export const onUpdateLocation = `subscription OnUpdateLocation {
         title
         description
         url
+        mediaType
         createdAt
         updatedAt
       }
@@ -332,6 +334,7 @@ export const onDeleteLocation = `subscription OnDeleteLocation {
         title
         description
         url
+        mediaType
         createdAt
         updatedAt
       }
@@ -353,6 +356,7 @@ export const onCreateContent = `subscription OnCreateContent {
       key
     }
     url
+    mediaType
     createdAt
     updatedAt
     location {
@@ -394,6 +398,7 @@ export const onUpdateContent = `subscription OnUpdateContent {
       key
     }
     url
+    mediaType
     createdAt
     updatedAt
     location {
@@ -435,6 +440,7 @@ export const onDeleteContent = `subscription OnDeleteContent {
       key
     }
     url
+    mediaType
     createdAt
     updatedAt
     location {

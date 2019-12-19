@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { API, graphqlOperation } from "aws-amplify";
 import { getLocation } from "../graphql/queries";
-import NewContent from "../components/NewContent";
+import ContentNew from "../components/ContentNew";
 import { onCreateContent, onUpdateLocation } from "../graphql/subscriptions";
 import { updateLocation, deleteLocation } from "../graphql/mutations";
 import ContentsList from "../components/ContentsList";
@@ -164,7 +164,7 @@ class Location extends Component {
           ? this.renderLocation()
           : this.renderEditLocation()}
 
-        <NewContent
+        <ContentNew
           username={location.owner}
           locationId={this.props.locationId}
         />
