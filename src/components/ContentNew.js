@@ -1,14 +1,24 @@
 import React, { Component } from "react";
 import { API, graphqlOperation } from "aws-amplify";
 import { createContent } from "../graphql/mutations";
+import { listMediaTypes } from "../graphql/queries";
 
 class ContentNew extends Component {
   state = {
     title: "",
     description: "",
     uploading: false,
-    showNewContent: false
+    showNewContent: false,
+    none: "",
+    image: "",
+    image360: "",
+    video: "",
+    video360: ""
   };
+
+  componentDidMount() {
+    this.handleGetMediaTypes();
+  }
 
   handleAddContent = event => {
     event.preventDefault();
@@ -55,8 +65,28 @@ class ContentNew extends Component {
     });
   };
 
+  handleGetMediaTypes = async () => {
+    const result = await API.graphql(graphqlOperation(listMediaTypes));
+    this.setState({
+      none: result.data.__type.enumValues[0].name,
+      image: result.data.__type.enumValues[1].name,
+      image360: result.data.__type.enumValues[2].name,
+      video: result.data.__type.enumValues[3].name,
+      video360: result.data.__type.enumValues[4].name
+    });
+  };
+
   render() {
-    const { title, description, showNewContent } = this.state;
+    const {
+      title,
+      description,
+      showNewContent,
+      none,
+      image,
+      image360,
+      video,
+      video360
+    } = this.state;
 
     if (showNewContent === false) {
       return <button onClick={this.handleShowNewContent}>New Content</button>;
@@ -66,6 +96,19 @@ class ContentNew extends Component {
       <>
         <h1>New Content</h1>
         <form>
+          <p>
+            The media type of this content is{" "}
+            <span>
+              <select onChange={this.handleAddContent} name="media">
+                <option defaultValue={none}>Text</option>
+                <option value={image}>Image</option>
+                <option value={image360}>Image 360</option>
+                <option value={video}>Video</option>
+                <option value={video360}>Video 360</option>
+              </select>
+            </span>
+          </p>
+
           <input
             name="title"
             placeholder="Content title"

@@ -14,11 +14,16 @@ class Content extends Component {
     description: "",
     locationId: "",
     url: "",
+    mediaType: "",
     isLoading: true,
     id: this.props.contentId,
     editedContent: false,
     uploading: false,
-    mediaTypes: null
+    none: "",
+    image: "",
+    image360: "",
+    video: "",
+    video360: ""
   };
 
   componentDidMount() {
@@ -38,25 +43,32 @@ class Content extends Component {
       description: result.data.getContent.description,
       locationId: result.data.getContent.locationId,
       url: result.data.getContent.url,
+      mediaType: result.data.getContent.mediaType,
       isLoading: false
     });
   };
 
   handleGetMediaTypes = async () => {
     const result = await API.graphql(graphqlOperation(listMediaTypes));
-    console.log(result);
-    this.setState({ mediaTypes: result.data.listMediaTypes });
+    this.setState({
+      none: result.data.__type.enumValues[0].name,
+      image: result.data.__type.enumValues[1].name,
+      image360: result.data.__type.enumValues[2].name,
+      video: result.data.__type.enumValues[3].name,
+      video360: result.data.__type.enumValues[4].name
+    });
   };
 
   handleUpdateContent = async event => {
     event.preventDefault();
-    const { id, title, description, locationId, url } = this.state;
+    const { id, title, description, locationId, url, mediaType } = this.state;
     const input = {
       id,
       title,
       description,
       locationId,
-      url
+      url,
+      mediaType
     };
     const result = await API.graphql(
       graphqlOperation(updateContent, { input })
@@ -66,6 +78,7 @@ class Content extends Component {
       description: result.data.updateContent.description,
       locationId: result.data.updateContent.locationId,
       url: result.data.updateContent.url,
+      mediaType: result.data.updateContent.mediaType,
       editedContent: true
     });
   };
@@ -118,7 +131,12 @@ class Content extends Component {
       id,
       title,
       url,
-      description
+      description,
+      none,
+      image,
+      image360,
+      video,
+      video360
     } = this.state;
 
     if (isLoading) {
@@ -142,6 +160,11 @@ class Content extends Component {
           title={title}
           description={description}
           locationId={locationId}
+          none={none}
+          image={image}
+          image360={image360}
+          video={video}
+          video360={video360}
           handleUpdateContent={this.handleUpdateContent}
           handleChangeContent={this.handleChangeContent}
           handleDeleteContent={() => this.handleDeleteContent(id)}
