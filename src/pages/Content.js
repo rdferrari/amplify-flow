@@ -136,7 +136,9 @@ class Content extends Component {
       image,
       image360,
       video,
-      video360
+      video360,
+      mediaType,
+      content
     } = this.state;
 
     if (isLoading) {
@@ -165,6 +167,7 @@ class Content extends Component {
           image360={image360}
           video={video}
           video360={video360}
+          mediaType={mediaType}
           handleUpdateContent={this.handleUpdateContent}
           handleChangeContent={this.handleChangeContent}
           handleDeleteContent={() => this.handleDeleteContent(id)}

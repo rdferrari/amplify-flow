@@ -10,16 +10,22 @@ const ContentEdit = ({
   image,
   image360,
   video,
-  video360
+  video360,
+  mediaType
 }) => {
   return (
     <>
       <form onSubmit={handleUpdateContent}>
+        <p>the type is {mediaType}</p>
         <p>
           The media type of this content is{" "}
           <span>
-            <select onChange={handleChangeContent} name="media">
-              <option defaultValue={none}>Text</option>
+            <select
+              name="mediaType"
+              value={mediaType}
+              onChange={handleChangeContent}
+            >
+              <option value={none}>Text</option>
               <option value={image}>Image</option>
               <option value={image360}>Image 360</option>
               <option value={video}>Video</option>
@@ -27,6 +33,7 @@ const ContentEdit = ({
             </select>
           </span>
         </p>
+
         <input
           type="text"
           onChange={handleChangeContent}

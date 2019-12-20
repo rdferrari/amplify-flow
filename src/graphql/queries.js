@@ -292,11 +292,3 @@ export const listMediaTypes = `query
     }
   }
 }`;
-
-export const getMediaTypes = `query GetMediaTypes($enum: String!) {
-  enum: __type(name: $enum) {
-    enumValues {
-      name
-    }
-  }
-}`;

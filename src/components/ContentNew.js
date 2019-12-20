@@ -7,6 +7,7 @@ class ContentNew extends Component {
   state = {
     title: "",
     description: "",
+    mediaType: "",
     uploading: false,
     showNewContent: false,
     none: "",
@@ -35,10 +36,11 @@ class ContentNew extends Component {
     event.preventDefault();
 
     try {
-      const { title, description } = this.state;
+      const { title, description, mediaType } = this.state;
       const input = {
         title,
         description,
+        mediaType,
         locationId: this.props.locationId,
         owner: this.props.username
       };
@@ -52,7 +54,8 @@ class ContentNew extends Component {
 
       this.setState({
         title: "",
-        description: ""
+        description: "",
+        mediaType: ""
       });
     } catch (err) {
       console.error("Error adding new content", err);
@@ -85,7 +88,8 @@ class ContentNew extends Component {
       image,
       image360,
       video,
-      video360
+      video360,
+      mediaType
     } = this.state;
 
     if (showNewContent === false) {
@@ -97,10 +101,14 @@ class ContentNew extends Component {
         <h1>New Content</h1>
         <form>
           <p>
-            The media type of this content is{" "}
+            Select a media type{" "}
             <span>
-              <select onChange={this.handleAddContent} name="media">
-                <option defaultValue={none}>Text</option>
+              <select
+                name="mediaType"
+                value={mediaType}
+                onChange={this.handleAddContent}
+              >
+                <option value={none}>Text</option>
                 <option value={image}>Image</option>
                 <option value={image360}>Image 360</option>
                 <option value={video}>Video</option>
