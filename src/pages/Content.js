@@ -137,8 +137,7 @@ class Content extends Component {
       image360,
       video,
       video360,
-      mediaType,
-      content
+      mediaType
     } = this.state;
 
     if (isLoading) {

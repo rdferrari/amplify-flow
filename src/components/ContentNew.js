@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import { API, graphqlOperation } from "aws-amplify";
+import { API, graphqlOperation, Storage } from "aws-amplify";
 import { createContent } from "../graphql/mutations";
 import { listMediaTypes } from "../graphql/queries";
+
+import ContentUpload from "./ContentUpload";
 
 class ContentNew extends Component {
   state = {
     title: "",
     description: "",
+    url: "",
     mediaType: "",
     uploading: false,
     showNewContent: false,
@@ -36,10 +39,11 @@ class ContentNew extends Component {
     event.preventDefault();
 
     try {
-      const { title, description, mediaType } = this.state;
+      const { title, description, url, mediaType } = this.state;
       const input = {
         title,
         description,
+        url,
         mediaType,
         locationId: this.props.locationId,
         owner: this.props.username
@@ -55,7 +59,8 @@ class ContentNew extends Component {
       this.setState({
         title: "",
         description: "",
-        mediaType: ""
+        mediaType: "",
+        url: ""
       });
     } catch (err) {
       console.error("Error adding new content", err);
@@ -79,10 +84,33 @@ class ContentNew extends Component {
     });
   };
 
+  // handleChangeMediaType = () => [
+  //   this.setState({
+  //     mediaType: ""
+  //   })
+  // ];
+
+  handleDeleteFile = async imageUrl => {
+    Storage.remove(imageUrl).then(() => {
+      this.setState({ url: null, mediaType: "" });
+    });
+  };
+
+  handleUploadFile = async event => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const name = file.name;
+
+    Storage.put(name, file).then(() => {
+      this.setState({ url: name });
+    });
+  };
+
   render() {
     const {
       title,
       description,
+      url,
       showNewContent,
       none,
       image,
@@ -100,22 +128,35 @@ class ContentNew extends Component {
       <>
         <h1>New Content</h1>
         <form>
-          <p>
-            Select a media type{" "}
-            <span>
-              <select
-                name="mediaType"
-                value={mediaType}
-                onChange={this.handleAddContent}
-              >
-                <option value={none}>Text</option>
-                <option value={image}>Image</option>
-                <option value={image360}>Image 360</option>
-                <option value={video}>Video</option>
-                <option value={video360}>Video 360</option>
-              </select>
-            </span>
-          </p>
+          {mediaType === image || mediaType === image360 ? (
+            <>
+              <ContentUpload
+                url={url}
+                handleDeleteFile={() => this.handleDeleteFile(url)}
+                handleUploadFile={this.handleUploadFile}
+              />
+              <p onClick={() => this.handleDeleteFile(url)}>
+                Change media type
+              </p>
+            </>
+          ) : (
+            <p>
+              Select a media type{" "}
+              <span>
+                <select
+                  name="mediaType"
+                  value={mediaType}
+                  onChange={this.handleAddContent}
+                >
+                  <option value={none}>Text</option>
+                  <option value={image}>Image</option>
+                  <option value={image360}>Image 360</option>
+                  <option value={video}>Video</option>
+                  <option value={video360}>Video 360</option>
+                </select>
+              </span>
+            </p>
+          )}
 
           <input
             name="title"
