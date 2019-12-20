@@ -93,10 +93,10 @@ class Content extends Component {
 
   handleDeleteFile = async imageUrl => {
     const { id } = this.state;
-    const input = { id, url: null };
+    const input = { id, url: "" };
     await API.graphql(graphqlOperation(updateContent, { input }));
     Storage.remove(imageUrl).then(() => {
-      this.setState({ url: null });
+      this.setState({ url: "" });
     });
   };
 

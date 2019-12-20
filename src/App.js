@@ -84,6 +84,7 @@ class App extends Component {
       <>
         <Router>
           <Route exact path="/" component={LandPage} />
+
           <Authenticator theme={theme} />
           {!users ? (
             <p>loanding...</p>
