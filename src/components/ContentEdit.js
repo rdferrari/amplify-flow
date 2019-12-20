@@ -3,6 +3,7 @@ import React from "react";
 const ContentEdit = ({
   title,
   description,
+  url,
   handleUpdateContent,
   handleChangeContent,
   handleDeleteContent,
@@ -17,22 +18,25 @@ const ContentEdit = ({
     <>
       <form onSubmit={handleUpdateContent}>
         <p>the type is {mediaType}</p>
-        <p>
-          The media type of this content is{" "}
-          <span>
-            <select
-              name="mediaType"
-              value={mediaType}
-              onChange={handleChangeContent}
-            >
-              <option value={none}>Text</option>
-              <option value={image}>Image</option>
-              <option value={image360}>Image 360</option>
-              <option value={video}>Video</option>
-              <option value={video360}>Video 360</option>
-            </select>
-          </span>
-        </p>
+
+        {!url ? (
+          <p>
+            The media type of this content is{" "}
+            <span>
+              <select
+                name="mediaType"
+                value={mediaType}
+                onChange={handleChangeContent}
+              >
+                <option value={none}>Text</option>
+                <option value={image}>Image</option>
+                <option value={image360}>Image 360</option>
+                <option value={video}>Video</option>
+                <option value={video360}>Video 360</option>
+              </select>
+            </span>
+          </p>
+        ) : null}
 
         <input
           type="text"

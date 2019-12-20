@@ -11,13 +11,7 @@ const ContentsList = ({ location }) => {
       ) : (
         location.contents.items.map(content => (
           <div key={content.id}>
-            {!content.url ? (
-              <Link to={`/content/${content.id}`}>
-                <p>Add a new media</p>
-              </Link>
-            ) : (
-              <S3Image imgKey={content.url} />
-            )}
+            {!content.url ? null : <S3Image imgKey={content.url} />}
             <p>{content.title}</p>
             <p>{content.description}</p>
             <Link to={`/content/${content.id}`}>

@@ -160,6 +160,7 @@ class Content extends Component {
           id={id}
           title={title}
           description={description}
+          url={url}
           locationId={locationId}
           none={none}
           image={image}
