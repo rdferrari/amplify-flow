@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "aframe": "^1.0.2",
+    "aframe-react": "^4.4.0",
     "aws-amplify": "^1.2.4",
     "aws-amplify-react": "^2.5.4",
-    "react": "^16.8.0-alpha.1",
-    "react-dom": "^16.8.0-alpha.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0"
   },

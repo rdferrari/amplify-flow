@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import Pulse from "./Pulse";
 
 import { Storage } from "aws-amplify";
 
-class LandPage extends Component {
+class Content360 extends Component {
   state = {
-    urlImage: ""
+    urlImage360: ""
   };
 
   componentDidMount() {
@@ -30,11 +29,9 @@ class LandPage extends Component {
         ) : (
           <img src={this.state.urlImage} />
         )}
-
-        <Pulse />
       </div>
     );
   }
 }
 
-export default LandPage;
+export default Content360;

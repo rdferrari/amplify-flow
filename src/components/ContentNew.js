@@ -9,11 +9,11 @@ class ContentNew extends Component {
   state = {
     title: "",
     description: "",
-    url: "",
-    mediaType: "",
+    url: "none",
+    mediaType: "NONE",
     uploading: false,
     showNewContent: false,
-    none: "",
+    text: "",
     image: "",
     image360: "",
     video: "",
@@ -76,7 +76,7 @@ class ContentNew extends Component {
   handleGetMediaTypes = async () => {
     const result = await API.graphql(graphqlOperation(listMediaTypes));
     this.setState({
-      none: result.data.__type.enumValues[0].name,
+      text: result.data.__type.enumValues[0].name,
       image: result.data.__type.enumValues[1].name,
       image360: result.data.__type.enumValues[2].name,
       video: result.data.__type.enumValues[3].name,
@@ -112,7 +112,7 @@ class ContentNew extends Component {
       description,
       url,
       showNewContent,
-      none,
+      text,
       image,
       image360,
       video,
@@ -123,6 +123,8 @@ class ContentNew extends Component {
     if (showNewContent === false) {
       return <button onClick={this.handleShowNewContent}>New Content</button>;
     }
+
+    console.log(mediaType);
 
     return (
       <>
@@ -148,7 +150,7 @@ class ContentNew extends Component {
                   value={mediaType}
                   onChange={this.handleAddContent}
                 >
-                  <option value={none}>Text</option>
+                  <option value={text}>Text</option>
                   <option value={image}>Image</option>
                   <option value={image360}>Image 360</option>
                   <option value={video}>Video</option>

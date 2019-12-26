@@ -7,6 +7,8 @@ import NewMapstory from "../components/NewMapstory";
 import MapstoriesList from "../components/MapstoriesList";
 import User from "../components/User";
 
+import { Entity, Scene } from "aframe-react";
+
 class Home extends Component {
   state = {
     users: [],
@@ -109,6 +111,10 @@ class Home extends Component {
   render() {
     const { users, name, bio, id, showUpdateUser } = this.state;
 
+    const divStyle = {
+      height: "400px"
+    };
+
     return (
       <>
         <User
@@ -123,6 +129,11 @@ class Home extends Component {
 
         <NewMapstory userId={id} />
         <MapstoriesList />
+        <div style={divStyle}>
+          <Scene embedded vr-mode-ui="enabled: false">
+            <Entity primitive="a-sky" src="/images/pano.jpg" />
+          </Scene>
+        </div>
       </>
     );
   }
